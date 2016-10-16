@@ -8,6 +8,8 @@ namespace LunraGames.NoiseMaker
 	public class NoiseFilterEditor : Editor
 	{
 		SerializedProperty GenerateOnAwake;
+		SerializedProperty OverrideSeed;
+		SerializedProperty Seed;
 		SerializedProperty NoiseGraph;
 		SerializedProperty MercatorMap;
 		SerializedProperty MapWidth;
@@ -22,6 +24,8 @@ namespace LunraGames.NoiseMaker
 		void OnEnable()
 		{
 			GenerateOnAwake = serializedObject.FindProperty("GenerateOnAwake");
+			OverrideSeed = serializedObject.FindProperty("OverrideSeed");
+			Seed = serializedObject.FindProperty("Seed");
 			NoiseGraph = serializedObject.FindProperty("NoiseGraph");
 			MercatorMap = serializedObject.FindProperty("MercatorMap");
 			MapWidth = serializedObject.FindProperty("MapWidth");
@@ -52,11 +56,15 @@ namespace LunraGames.NoiseMaker
 
 			EditorGUILayout.PropertyField(GenerateOnAwake);
 
+			EditorGUILayout.PropertyField(OverrideSeed);
+
+			if (OverrideSeed.boolValue) EditorGUILayout.PropertyField(Seed);
+
 			if (GenerateOnAwake.boolValue && NoiseGraph.objectReferenceValue == null) EditorGUILayout.HelpBox("A Noise Graph must be specified before the gameobject is enabled for the first time, or an error will occur.", MessageType.Warning);
 
 			EditorGUILayout.PropertyField(NoiseGraph);
 
-			Datum.floatValue = Deltas.DetectDelta<float>(Datum.floatValue, EditorGUILayout.DelayedFloatField(new GUIContent("Datum", "Datum is similar to a \"sea level\" that all values are relative to."), Datum.floatValue), ref changed);
+			Datum.floatValue = Deltas.DetectDelta(Datum.floatValue, EditorGUILayout.DelayedFloatField(new GUIContent("Datum", "Datum is similar to a \"sea level\" that all values are relative to."), Datum.floatValue), ref changed);
 			if (changed && Datum.floatValue <= 0f)
 			{
 				Datum.floatValue = NoiseFilter.DefaultDatum;
@@ -64,7 +72,7 @@ namespace LunraGames.NoiseMaker
 			}
 			changed = false;
 
-			Deviation.floatValue = Deltas.DetectDelta<float>(Deviation.floatValue, EditorGUILayout.DelayedFloatField(new GUIContent("Deviation", "Deviation is the scalar of the datam to multiply the values by."), Deviation.floatValue), ref changed);
+			Deviation.floatValue = Deltas.DetectDelta(Deviation.floatValue, EditorGUILayout.DelayedFloatField(new GUIContent("Deviation", "Deviation is the scalar of the datam to multiply the values by."), Deviation.floatValue), ref changed);
 			if (changed && Deviation.floatValue < 0f)
 			{
 				Deviation.floatValue = NoiseFilter.DefaultDeviation;

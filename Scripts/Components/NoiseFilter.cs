@@ -13,6 +13,8 @@ namespace LunraGames.NoiseMaker
 
 		#region Inspector
 		public bool GenerateOnAwake;
+		public bool OverrideSeed;
+		public int Seed;
 		public NoiseGraph NoiseGraph;
 		public MercatorMap MercatorMap;
 		public int MapWidth;
@@ -52,6 +54,8 @@ namespace LunraGames.NoiseMaker
 
 			if (graph == null) throw new NullReferenceException("Couldn't instantiate the NoiseGraph");
 			if (map == null) throw new NullReferenceException("Couldn't instantiate the MercatorMap");
+
+			if (OverrideSeed) graph.Seed = Seed == 0 ? NumberDemon.DemonUtility.NextInteger : Seed;
 
 			var root = graph.Root;
 
