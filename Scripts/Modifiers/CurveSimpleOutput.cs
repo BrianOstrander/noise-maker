@@ -18,7 +18,7 @@ namespace LunraGames.NoiseMaker.Modifiers
             Curve = curve;
         }
 
-        public double GetValue(double x, double y, double z)
+        public float GetValue(float x, float y, float z)
         {
             if (SourceModule == null) throw new NullReferenceException("A source module must be provided.");
             if (Curve == null) throw new Exception("An animation curve must be specified.");

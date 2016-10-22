@@ -713,7 +713,7 @@ namespace LunraGames.NoiseMaker
 					for (var y = 0; y < PreviewTexture.height; y++)
 					{
 						// Get the value from the specified location, and run it through the selected previewer. 
-						var value = (float)module.GetValue((double)x, (double)y, 0.0);
+						var value = module.GetValue(x, y, 0f);
 						pixels[SphereUtils.PixelCoordinateToIndex(x, y, PreviewTexture.width, PreviewTexture.height)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
 					}
 				}
@@ -876,7 +876,7 @@ namespace LunraGames.NoiseMaker
 							{
 								var lat = SphereUtils.GetLatitude(y, resultHeight);
 								var lon = SphereUtils.GetLongitude(x, resultWidth);
-								var value = (float)sphere.GetValue((double)lat, (double)lon);
+								var value = sphere.GetValue(lat, lon);
 								pixels[SphereUtils.PixelCoordinateToIndex(x, y, resultWidth, resultHeight)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
 							}
 						}

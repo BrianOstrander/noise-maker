@@ -50,12 +50,12 @@ namespace LunraGames.NoiseMaker
 								{
 									var latitude = SphereUtils.GetLatitude(y, height);
 									var longitude = SphereUtils.GetLongitude(x, width);
-									value = (float)(module as Sphere).GetValue(latitude, longitude);
+									value = (module as Sphere).GetValue(latitude, longitude);
 									weight = domain.GetSphereWeight(latitude, longitude, value);
 								}
 								else
 								{
-									value = (float)(module as IModule).GetValue(x, y, 0.0);
+									value = (module as IModule).GetValue(x, y, 0f);
 									weight = domain.GetPlaneWeight(x, y, value);
 								}
 

@@ -99,7 +99,7 @@ namespace LunraGames.NoiseMaker
 				{
 					var lat = SphereUtils.GetLatitude(y, height);
 					var lon = SphereUtils.GetLongitude(x, width);
-					var value = (float)sphere.GetValue((double)lat, (double)lon);
+					var value = sphere.GetValue(lat, lon);
 					colors[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = GetSphereColor(lat, lon, value);
 				}
 			}

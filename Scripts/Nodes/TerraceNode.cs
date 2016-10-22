@@ -30,7 +30,7 @@ namespace LunraGames.NoiseMaker
 				Points = new List<float> { -1f, 1f };
 			}
 
-			terrace.ControlPoints = terrace.ControlPoints ?? new List<double>();
+			terrace.ControlPoints = terrace.ControlPoints ?? new List<float>();
 
 			for (var i = 0; i < Points.Count; i++)
 			{
