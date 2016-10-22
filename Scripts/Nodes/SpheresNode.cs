@@ -1,8 +1,4 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
-using LibNoise;
-using LibNoise.Modifiers;
-using System;
+﻿using LibNoise;
 
 namespace LunraGames.NoiseMaker
 {
@@ -13,11 +9,11 @@ namespace LunraGames.NoiseMaker
 
 		public override IModule GetValue (Graph graph)
 		{
-			var cylinders = Value == null ? new Spheres() : Value as Spheres;
+			var spheres = Value == null ? new Spheres() : Value as Spheres;
 
-			cylinders.Frequency = GetLocalIfValueNull<float>(Frequency, 0, graph);
+			spheres.Frequency = GetLocalIfValueNull(Frequency, 0, graph);
 
-			Value = cylinders;
+			Value = spheres;
 			return Value;
 		}
 	}
