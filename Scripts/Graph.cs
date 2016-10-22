@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using System.Linq;
 using UnityEngine;
 using LibNoise.Models;
-using Random = System.Random;
 
 namespace LunraGames.NoiseMaker
 {
