@@ -88,14 +88,14 @@ namespace LunraGames.NoiseMaker
 		protected List<object> Values(Graph graph, params string[] sources)
 		{
 			if (graph == null) throw new ArgumentNullException("graph");
-			if (graph.Nodes == null) throw new ArgumentException("graph.Nodes");
+			if (graph.AllNodes == null) throw new ArgumentException("graph.Nodes");
 
 			var result = new List<object>();
 			var ids = sources.Length == 0 ? SourceIds.ToArray() : sources;
 			foreach (var source in ids)
 			{
 				if (StringExtensions.IsNullOrWhiteSpace(source)) throw new ArgumentNullException("sources", "Array \"sources\" can't contain a null or empty string");
-				var node = graph.Nodes.FirstOrDefault(n => n.Id == source);
+				var node = graph.AllNodes.FirstOrDefault(n => n.Id == source);
 				if (node == null) throw new ArgumentOutOfRangeException("sources", "No node found for \""+sources+"\"");
 				result.Add(node.GetRawValue(graph));
 			}
@@ -111,7 +111,7 @@ namespace LunraGames.NoiseMaker
 		protected List<object> NullableValues(Graph graph, params string[] sources)
 		{
 			if (graph == null) throw new ArgumentNullException("graph");
-			if (graph.Nodes == null) throw new ArgumentException("graph.Nodes");
+			if (graph.AllNodes == null) throw new ArgumentException("graph.Nodes");
 
 			var result = new List<object>();
 			var ids = sources.Length == 0 ? SourceIds.ToArray() : sources;
@@ -120,7 +120,7 @@ namespace LunraGames.NoiseMaker
 				if (StringExtensions.IsNullOrWhiteSpace(source)) result.Add(null);
 				else
 				{
-					var node = graph.Nodes.FirstOrDefault(n => n.Id == source);
+					var node = graph.AllNodes.FirstOrDefault(n => n.Id == source);
 					if (node == null) throw new ArgumentOutOfRangeException("sources", "No node found for \""+sources+"\"");
 					result.Add(node.GetRawValue(graph));
 				}
@@ -222,7 +222,7 @@ namespace LunraGames.NoiseMaker
 
 				if (id == ancestorId) return true;
 
-				var child = graph.Nodes.FirstOrDefault(c => c.Id == id);
+				var child = graph.AllNodes.FirstOrDefault(c => c.Id == id);
 				var hasAncestor = child == null ? false : child.HasAncestor(graph, ancestorId);
 				if (hasAncestor) return true;
 			}

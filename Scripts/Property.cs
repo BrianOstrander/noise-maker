@@ -1,9 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
 using UnityEngine;
-using System.IO;
-using System.Text;
-using Newtonsoft.Json.Linq;
 
 namespace LunraGames.NoiseMaker
 {
@@ -11,7 +8,6 @@ namespace LunraGames.NoiseMaker
 	public class Property
 	{
 		public string Name;
-		public string Id;
 		[JsonProperty]
 		object _Value;
 		// todo: remove this hack, when I have the patience...

@@ -13,10 +13,20 @@ namespace LunraGames.NoiseMaker
 		const float DefaultDatum = 0.5f;
 		const float DefaultDeviation = 0.1f;
 
-		public List<INode> Nodes = new List<INode>();
+		[JsonProperty]
+		List<INode> Nodes = new List<INode>();
+
+		INode[] CachedNodes;
+
+		[JsonIgnore]
+		public INode[] AllNodes { get { return CachedNodes ?? (CachedNodes = Nodes.ToArray()); } }
+
+		IPropertyNode[] CachedProperties;
+
+		[JsonIgnore]
+		public IPropertyNode[] PropertyNodes { get { return CachedProperties ?? (CachedProperties = AllNodes.OfType<IPropertyNode>().Where(p => p.IsEditable).ToArray()); } }
 
 		public string RootId;
-
 		public int Seed;
 
 		IModule _Root;
@@ -29,7 +39,7 @@ namespace LunraGames.NoiseMaker
 				if (StringExtensions.IsNullOrWhiteSpace(RootId)) throw new NullReferenceException("No RootId has been set");
 				if (_Root == null)
 				{
-					var node = Nodes.FirstOrDefault(n => n.Id == RootId);
+					var node = AllNodes.FirstOrDefault(n => n.Id == RootId);
 					if (node == null) throw new NullReferenceException("No node found for the RootId \""+RootId+"\"");
 					_Root = node.GetRawValue(this) as IModule;
 				}
@@ -47,7 +57,7 @@ namespace LunraGames.NoiseMaker
 				if (StringExtensions.IsNullOrWhiteSpace(RootId)) throw new NullReferenceException("No RootId has been set");
 				if (_RootNode == null || _RootNode.Id != RootId)
 				{
-					var node = Nodes.FirstOrDefault(n => n.Id == RootId);
+					var node = AllNodes.FirstOrDefault(n => n.Id == RootId);
 					if (node == null) throw new NullReferenceException("No node found for the RootId \""+RootId+"\"");
 					_RootNode = node as RootNode;
 				}
@@ -55,45 +65,21 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
-		public void Apply(params Property[] properties)
+		public void Add(INode node)
 		{
-			foreach (var property in properties)
-			{
-				if (property == null)
-				{
-					Debug.LogWarning("Can't provide null properties, skipping");
-					continue;
-				}
-				else if (property.Value == null)
-				{
-					Debug.LogWarning("Can't provide properties with null values, skipping");
-					continue;
-				}
+			if (node == null) throw new ArgumentNullException("node");
+			if (Nodes.Any(n => n.Id == node.Id)) throw new ArgumentException("The specified node already exists in the Graph", "node");
 
-				var node = Nodes.FirstOrDefault(n => n.Id == property.Id);
-
-				if (node == null)
-				{
-					Debug.LogWarning("No node found for property \""+property.Name+"\", skipping");
-					continue;
-				}
-				else if (!typeof(IPropertyNode).IsAssignableFrom(node.GetType()))
-				{
-					Debug.LogWarning("Node for property \""+property.Name+"\" is not a node that impliments IPropertyNode, skipping");
-					continue;
-				}
-
-				var typedNode = node as IPropertyNode;
-
-				typedNode.RawPropertyValue = property.Value;
-			}
+			Nodes.Add(node);
+			CleanCache();
 		}
 
 		public void Remove(INode node)
 		{
 			if (node == null) throw new ArgumentNullException("node");
+			if (!Nodes.Any(n => n.Id == node.Id)) throw new ArgumentException("The specified node dose not exist in the Graph", "node");
 
-			foreach (var curr in Nodes)
+			foreach (var curr in AllNodes)
 			{
 				if (curr.SourceIds == null) continue;
 				for (var i = 0; i < curr.SourceIds.Count; i++)
@@ -101,7 +87,17 @@ namespace LunraGames.NoiseMaker
 					if (curr.SourceIds[i] == node.Id) curr.SourceIds[i] = null;
 				}
 			}
+
 			Nodes.Remove(node);
+			CleanCache();
+		}
+
+		void CleanCache() 
+		{
+			CachedNodes = null;
+			CachedProperties = null;
+			_Root = null;
+			_RootNode = null;
 		}
 
 		/// <summary>
@@ -139,6 +135,69 @@ namespace LunraGames.NoiseMaker
 				var latLong = SphereUtils.CartesianToPolar(vert.normalized);
 				vertices[i] = (vert.normalized * datum) + (vert.normalized * (float)sphere.GetValue(latLong.x, latLong.y) * (datum * deviation));
 			}
+		}
+
+		public void Apply(params Property[] properties)
+		{
+			foreach (var property in properties)
+			{
+				if (property == null)
+				{
+					Debug.LogWarning("Can't provide null properties, skipping");
+					continue;
+				}
+				if (property.Value == null)
+				{
+					Debug.LogWarning("Can't provide properties with null values, skipping");
+					continue;
+				}
+
+				SetRaw(property.Name, property.Value);
+			}
+			CleanCache();
+		}
+
+		public void Set(string name, bool value) { SetRaw(name, value); }
+
+		public void Set(string name, AnimationCurve value) { SetRaw(name, value); }
+
+		public void Set(string name, CurveRangeOverrides value) { SetRaw(name, value); }
+
+		public void Set(string name, float value) { SetRaw(name, value); }
+
+		public void Set(string name, int value) { SetRaw(name, value); }
+
+		public void Set(string name, NoiseQuality value) { SetRaw(name, value); }
+
+		public void Set(string name, RangeOverrides value) { SetRaw(name, value); }
+
+		public void Set(string name, Vector3 value) { SetRaw(name, value); }
+
+		public T Get<T>(string name)
+		{
+			var property = PropertyNodes.FirstOrDefault(p => p.Name == name && (p as INode).OutputType == typeof(T));
+
+			if (property == null) 
+			{
+				Debug.LogError("No property named \"" + name + "\" found, returning default value");
+				return default(T);
+			}
+
+			return (T)property.RawPropertyValue;
+		}
+
+		void SetRaw(string name, object value)
+		{
+			var property = PropertyNodes.FirstOrDefault(p => p.Name == name);
+
+			if (property == null)
+			{
+				Debug.LogWarning("No property named \"" + name + "\" found");
+				return;
+			}
+
+			property.RawPropertyValue = value;
+			CleanCache();
 		}
 	}
 }

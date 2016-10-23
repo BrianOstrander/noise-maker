@@ -193,7 +193,7 @@ namespace LunraGames.NoiseMaker
 							if (!StringExtensions.IsNullOrWhiteSpace(savePath))
 							{
 								// Create default save, add required root node, save it, and open it up for editing.
-								var config = ScriptableObject.CreateInstance<NoiseGraph>();
+								var config = CreateInstance<NoiseGraph>();
 								AssetDatabase.CreateAsset(config, savePath);
 								SaveGuid = AssetDatabase.AssetPathToGUID(savePath);
 								Graph = new Graph();
@@ -201,7 +201,7 @@ namespace LunraGames.NoiseMaker
 								var root = new RootNode();
 								root.Id = Guid.NewGuid().ToString();
 								root.EditorPosition = GraphCenter();
-								Graph.Nodes.Add(root);
+								Graph.Add(root);
 								Graph.RootId = root.Id;
 								State = States.Idle;
 								Save();
@@ -247,7 +247,7 @@ namespace LunraGames.NoiseMaker
 
 				INode deletedNode = null;
 
-				foreach (var node in Graph.Nodes)
+				foreach (var node in Graph.AllNodes)
 				{
 					var graphPos = new Vector2(GraphPosition.x, GraphPosition.y);
 					var unmodifiedNode = node;
@@ -306,7 +306,7 @@ namespace LunraGames.NoiseMaker
 					var unmodifiedProperty = unmodifiedNode is IPropertyNode ? unmodifiedNode as IPropertyNode : null;
 					if (unmodifiedProperty != null && unmodifiedProperty.IsEditable && drawer.Editor.DrawRenameControl(windowRect))
 					{
-						var property = Properties.FirstOrDefault(p => p.Id == unmodifiedNode.Id);
+						var property = Properties.FirstOrDefault(p => p.Name == unmodifiedProperty.Name);
 						var propertyName = property == null || StringExtensions.IsNullOrWhiteSpace(property.Name) ? string.Empty : property.Name;
 						TextDialogPopup.Show(
 							"Rename Property", 
@@ -327,7 +327,7 @@ namespace LunraGames.NoiseMaker
 									}
 								}
 
-								if (property == null) Properties.Add(new Property { Name = freshName, Id = unmodifiedNode.Id, Value = (unmodifiedNode as IPropertyNode).RawPropertyValue });
+								if (property == null) Properties.Add(new Property { Name = freshName, Value = (unmodifiedNode as IPropertyNode).RawPropertyValue });
 								else property.Name = freshName;
 							},
 							text: propertyName
@@ -339,7 +339,7 @@ namespace LunraGames.NoiseMaker
 					if (unmodifiedNode is IPropertyNode)
 					{
 						var propertyNode = unmodifiedNode as IPropertyNode;
-						var foundProperty = Properties.FirstOrDefault(p => p.Id == unmodifiedNode.Id);
+						var foundProperty = Properties.FirstOrDefault(p => p.Name == propertyNode.Name);
 						nodeName = propertyNode.IsEditable && foundProperty != null && !StringExtensions.IsNullOrWhiteSpace(foundProperty.Name) ? foundProperty.Name : nodeName;
 						GUI.color = propertyNode.IsEditable ? Color.green : Color.white;
 					}
@@ -356,10 +356,10 @@ namespace LunraGames.NoiseMaker
 								var propertyNode = result as IPropertyNode;
 								if (propertyNode.IsEditable)
 								{
-									var property = Properties.FirstOrDefault(p => p.Id == propertyNode.Id);
+									var property = Properties.FirstOrDefault(p => p.Name == propertyNode.Name);
 									if (property == null)
 									{
-										property = new Property { Name = "", Id = propertyNode.Id, Value = propertyNode.RawPropertyValue };
+										property = new Property { Name = propertyNode.Name, Value = propertyNode.RawPropertyValue };
 										Properties.Add(property);
 									}
 									else property.Value = propertyNode.RawPropertyValue;
@@ -383,7 +383,7 @@ namespace LunraGames.NoiseMaker
 					unmodifiedNode.EditorPosition = windowRect.position - graphPos;
 				}
 				// Loop through the nodes and draw any connections between them.
-				foreach (var node in Graph.Nodes)
+				foreach (var node in Graph.AllNodes)
 				{
 					if (node.SourceIds == null || node.SourceIds.Count == 0) continue;
 
@@ -403,8 +403,12 @@ namespace LunraGames.NoiseMaker
 				if (deletedNode != null) 
 				{
 					Graph.Remove(deletedNode);
-					var deletedProperty = Properties.FirstOrDefault(p => p.Id == deletedNode.Id);
-					if (deletedProperty != null) Properties.Remove(deletedProperty);
+					var deletedProperty = deletedNode is IPropertyNode ? deletedNode as IPropertyNode : null;
+					if (deletedProperty != null && deletedProperty.IsEditable)
+					{
+						var matchingProperty = Properties.FirstOrDefault(p => p.Name == deletedProperty.Name);
+						if (matchingProperty != null) Properties.Remove(matchingProperty);
+					}
 				}
 			}
 	        EndWindows();
@@ -496,7 +500,7 @@ namespace LunraGames.NoiseMaker
 											var node = Activator.CreateInstance(unmodifiedOption.Details.Target) as INode;
 											node.Id = Guid.NewGuid().ToString();
 											node.EditorPosition = GraphCenter();
-											Graph.Nodes.Add(node);
+											Graph.Add(node);
 										}
 
 										if (unmodifiedOption.IsEditable) 
@@ -507,8 +511,8 @@ namespace LunraGames.NoiseMaker
 													"Create New Property", 
 													propertyName => 
 													{
- 														if (StringExtensions.IsNullOrWhiteSpace(propertyName)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "An empty name is not valid for a property node.", "Okay");
-														else if (Properties.FirstOrDefault(p => p.Name == propertyName) != null) UnityEditor.EditorUtility.DisplayDialog("Property Exists", "A property named \""+propertyName+"\" already exists.", "Okay");
+ 														if (StringExtensions.IsNullOrWhiteSpace(propertyName)) EditorUtility.DisplayDialog("Invalid", "An empty name is not valid for a property node.", "Okay");
+														else if (Properties.FirstOrDefault(p => p.Name == propertyName) != null) EditorUtility.DisplayDialog("Property Exists", "A property named \""+propertyName+"\" already exists.", "Okay");
 														else
 														{
 
@@ -516,9 +520,10 @@ namespace LunraGames.NoiseMaker
 															node.Id = Guid.NewGuid().ToString();
 															node.EditorPosition = GraphCenter();
 															node.IsEditable = true;
-															Graph.Nodes.Add(node);
+															node.Name = propertyName;
+															Graph.Add(node);
 
-															Properties.Add(new Property { Name = propertyName, Id = node.Id, Value = node.RawPropertyValue });
+															Properties.Add(new Property { Name = node.Name, Value = node.RawPropertyValue });
 														}
 													},
 													description: "Enter a unique name for this property node."
@@ -643,7 +648,7 @@ namespace LunraGames.NoiseMaker
 
 						GUILayout.BeginArea(previewArea);
 						{
-							var rootNode = Graph == null ? null : Graph.Nodes.FirstOrDefault(n => n.Id == Graph.RootId);
+							var rootNode = Graph == null ? null : Graph.AllNodes.FirstOrDefault(n => n.Id == Graph.RootId);
 
 							try
 							{

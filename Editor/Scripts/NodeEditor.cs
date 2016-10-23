@@ -200,7 +200,7 @@ namespace LunraGames.NoiseMaker
 
 				if (usingLinkedNode)
 				{
-					var originNode = graph.Nodes.FirstOrDefault(n => n.Id == node.SourceIds[link.Index]);
+					var originNode = graph.AllNodes.FirstOrDefault(n => n.Id == node.SourceIds[link.Index]);
 					if (originNode != null) usedNodeValue = originNode.GetRawValue(graph);
 				}
 

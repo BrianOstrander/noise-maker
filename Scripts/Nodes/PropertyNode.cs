@@ -1,11 +1,10 @@
 ﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace LunraGames.NoiseMaker
 {
 	public abstract class PropertyNode<T> : Node<T>, IPropertyNode
 	{
+		public string Name { get; set; }
 		public bool IsEditable { get; set; }
 		public T PropertyValue { get; set; }
 

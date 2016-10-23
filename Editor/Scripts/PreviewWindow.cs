@@ -1,8 +1,6 @@
 ﻿using UnityEditor;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 using LibNoise.Models;
 using LibNoise;
 
@@ -55,7 +53,7 @@ namespace LunraGames.NoiseMaker
 					DrawCentered("Select a Noise Maker\nFile to Preview");
 					return;
 				}
-				else if (1 < selections.Length)
+				if (1 < selections.Length)
 				{
 					DrawCentered("Select Only a Single\nNoise Maker File to Preview");
 					return;
@@ -68,7 +66,7 @@ namespace LunraGames.NoiseMaker
 					DrawCentered("Selection is an Invalid\nNoise Maker File");
 					return;
 				}
-				else NoiseGraph = selection;
+				NoiseGraph = selection;
 			}
 
 			overridePreview = overridePreview || wasNoise != NoiseGraph || wasMap != MercatorMap;
