@@ -1,4 +1,6 @@
-﻿namespace LunraGames.NoiseMaker
+﻿using LunraGames.NoiseMaker;
+
+namespace LunraGamesEditor.NoiseMaker
 {
 	public abstract class AltitudeEditor
 	{

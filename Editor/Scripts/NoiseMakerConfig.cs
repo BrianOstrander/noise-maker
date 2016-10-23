@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using LunraGames.Singletonnes;
-using System;
+using LunraGamesEditor.Singletonnes;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public class NoiseMakerConfig : EditorScriptableSingleton<NoiseMakerConfig>
 	{

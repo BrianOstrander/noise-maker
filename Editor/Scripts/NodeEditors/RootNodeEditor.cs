@@ -1,8 +1,10 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using LunraGames;
 using LunraGames.NumberDemon;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(RootNode), Strings.Hidden, "Root", Strings.SpecifyAnInput)]
 	public class RootNodeEditor : NodeEditor 

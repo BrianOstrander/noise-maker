@@ -1,13 +1,14 @@
 ﻿using UnityEditor;
+using LunraGamesEditor.PlugIt;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public static class Feedback
 	{
-		[MenuItem(LunraGames.Strings.Feedback + Strings.Plugin)]
+		[MenuItem(LunraGamesEditor.Strings.Feedback + Strings.Plugin)]
 		static void LaunchFeedback()
 		{
-			PlugIt.Helper.LaunchFeedback(LunraGames.Strings.Company, Strings.Plugin);
+			PlugIt.Helper.LaunchFeedback(LunraGamesEditor.Strings.Company, Strings.Plugin);
 		}
 	}
 }

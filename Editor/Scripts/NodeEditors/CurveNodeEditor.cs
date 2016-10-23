@@ -1,7 +1,9 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using LunraGames;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(CurveNode), Strings.Properties, "Curve")]
 	public class CurveNodeEditor : NodeEditor

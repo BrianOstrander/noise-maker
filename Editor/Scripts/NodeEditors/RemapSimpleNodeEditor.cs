@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(RemapSimpleNode), Strings.Modifiers, "Remap Simple", Strings.SpecifyAnInput)]
 	public class RemapSimpleNodeEditor : NodeEditor {}

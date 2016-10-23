@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	// todo: this is poorly named, it's more of a cache than a preview...
 	public class DomainPreview

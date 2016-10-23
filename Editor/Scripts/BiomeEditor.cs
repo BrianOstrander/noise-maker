@@ -4,8 +4,9 @@ using System.Linq;
 using UnityEngine;
 using LibNoise;
 using LibNoise.Models;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public static class BiomeEditor
 	{

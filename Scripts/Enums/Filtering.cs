@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace LunraGames.NoiseMaker
+﻿namespace LunraGames.NoiseMaker
 {
 	public enum Filtering
 	{

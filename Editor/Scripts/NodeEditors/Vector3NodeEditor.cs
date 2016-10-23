@@ -1,7 +1,9 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using LunraGames;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(Vector3Node), Strings.Properties, "Vector3")]
 	public class Vector3NodeEditor : NodeEditor

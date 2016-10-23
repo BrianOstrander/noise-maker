@@ -2,8 +2,9 @@
 using System;
 using System.Collections.Generic;
 using Tweener;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public static class Pinwheel 
 	{

@@ -4,8 +4,10 @@ using System.Linq;
 using System;
 using LibNoise;
 using UnityEditor;
+using LunraGames;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public abstract class NodeEditor
 	{

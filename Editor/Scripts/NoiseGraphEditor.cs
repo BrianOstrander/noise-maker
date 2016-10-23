@@ -2,8 +2,10 @@
 using UnityEditor;
 using System.Collections.Generic;
 using System;
+using LunraGames;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[CustomEditor(typeof(NoiseGraph), true)]
 	public class NoiseGraphEditor : Editor
@@ -94,7 +96,7 @@ namespace LunraGames.NoiseMaker
 			{
 				var rootChanged = false;
 
-				GUI.color = LunraGames.NoiseMaker.Styles.RootColor;
+				GUI.color = LunraGamesEditor.NoiseMaker.Styles.RootColor;
 				Graph.Seed = Deltas.DetectDelta(Graph.Seed, EditorGUILayout.IntField("Root Seed", Graph.Seed), ref rootChanged);
 				GUI.color = Color.white;
 

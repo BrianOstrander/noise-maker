@@ -1,6 +1,8 @@
 ﻿using UnityEditor;
+using LunraGames;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(BooleanNode), Strings.Properties, "Boolean")]
 	public class BooleanNodeEditor : NodeEditor

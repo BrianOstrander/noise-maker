@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public class Visualizers
 	{

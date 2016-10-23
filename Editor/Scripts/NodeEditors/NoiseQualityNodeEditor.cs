@@ -1,7 +1,9 @@
 ﻿using UnityEditor;
 using LibNoise;
+using LunraGames;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(NoiseQualityNode), Strings.Properties, "Noise Quality")]
 	public class NoiseQualityNodeEditor : NodeEditor

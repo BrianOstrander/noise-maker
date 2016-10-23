@@ -1,10 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
-using UnityEditor;
-using LibNoise;
+﻿using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(CheckerboardNode), Strings.Generators, "Checkerboard")]
 	public class CheckerboardNodeEditor : NodeEditor {}

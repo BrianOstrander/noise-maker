@@ -1,14 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System;
-using System.Linq;
 using UnityEditor;
-using LibNoise;
-using LibNoise.Modifiers;
 using System.Collections.Generic;
+using LunraGames.NoiseMaker;
 
-
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(RemapNode), Strings.Modifiers, "Remap")]
 	public class RemapNodeEditor : NodeEditor

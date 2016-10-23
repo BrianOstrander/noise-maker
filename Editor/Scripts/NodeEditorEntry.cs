@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public class NodeEditorEntry
 	{

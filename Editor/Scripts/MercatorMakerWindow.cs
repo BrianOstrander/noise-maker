@@ -5,8 +5,10 @@ using UnityEngine;
 using System.Linq;
 using LibNoise;
 using LibNoise.Models;
+using LunraGames;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public class MercatorMakerWindow : EditorWindow
 	{

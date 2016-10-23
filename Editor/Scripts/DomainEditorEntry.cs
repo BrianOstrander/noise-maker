@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public class DomainEditorEntry
 	{

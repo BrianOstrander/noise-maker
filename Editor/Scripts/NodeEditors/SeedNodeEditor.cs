@@ -1,8 +1,9 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(SeedNode), Strings.Utility, "Seed")]
 	public class SeedNodeEditor : NodeEditor

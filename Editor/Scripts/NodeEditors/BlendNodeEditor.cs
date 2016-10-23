@@ -1,10 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
-using UnityEditor;
-using LibNoise;
+﻿using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(BlendNode), Strings.Selectors, "Blend", "Specify two sources and a weight.")]
 	public class BlendNodeEditor : NodeEditor {}

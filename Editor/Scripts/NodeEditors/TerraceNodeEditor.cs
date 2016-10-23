@@ -1,14 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System;
-using System.Linq;
 using UnityEditor;
-using LibNoise;
-using LibNoise.Modifiers;
 using System.Collections.Generic;
+using LunraGames.NoiseMaker;
 
-
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	// I've hidden this because the LibNoise side of things keeps breaking when using multithreading.
 	[NodeDrawer(typeof(TerraceNode), Strings.Modifiers, "Terrace")]

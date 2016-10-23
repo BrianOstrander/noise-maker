@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using LunraGames;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	// todo: make a proper GUISkin file for these, instead of these hacks.
 	public class Styles

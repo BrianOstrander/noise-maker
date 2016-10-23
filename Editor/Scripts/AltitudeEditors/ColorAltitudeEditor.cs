@@ -1,10 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
-using UnityEditor;
-using LibNoise;
+﻿using UnityEditor;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[AltitudeDrawer(typeof(ColorAltitude), Strings.Default, "Color", "Define a color to appear at this Altitude")]
 	public class ColorAltitudeEditor : AltitudeEditor

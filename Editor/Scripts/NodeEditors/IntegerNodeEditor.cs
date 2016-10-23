@@ -1,6 +1,8 @@
 ﻿using UnityEditor;
+using LunraGames;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(IntegerNode), Strings.Properties, "Integer")]
 	public class IntegerNodeEditor : NodeEditor

@@ -4,8 +4,10 @@ using System.Linq;
 using UnityEngine;
 using LibNoise;
 using LibNoise.Models;
+using LunraGames.NoiseMaker;
+using LunraGames;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public abstract class DomainEditor
 	{

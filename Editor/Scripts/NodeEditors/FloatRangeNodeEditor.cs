@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
-using System;
 using UnityEditor;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(FloatRangeNode), Strings.Utility, "Float Range")]
 	public class FloatRangeNodeEditor : NodeEditor 

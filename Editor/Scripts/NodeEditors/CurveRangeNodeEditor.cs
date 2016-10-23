@@ -1,7 +1,8 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(CurveRangeNode), Strings.Utility, "Curve Range")]
 	public class CurveRangeNodeEditor : NodeEditor 

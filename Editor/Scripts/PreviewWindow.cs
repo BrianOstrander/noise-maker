@@ -3,8 +3,9 @@ using System;
 using UnityEngine;
 using LibNoise.Models;
 using LibNoise;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public class PreviewWindow : EditorWindow
 	{
