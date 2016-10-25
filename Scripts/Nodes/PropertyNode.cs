@@ -6,7 +6,7 @@ namespace LunraGames.NoiseMaker
 	{
 		public string Name { get; set; }
 		public bool IsEditable { get; set; }
-		public T PropertyValue { get; set; }
+		public virtual T PropertyValue { get; set; }
 
 		[JsonIgnore]
 		public object RawPropertyValue 

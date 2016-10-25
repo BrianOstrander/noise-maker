@@ -254,7 +254,8 @@ namespace LunraGamesEditor.NoiseMaker
 					var graphPos = new Vector2(GraphPosition.x, GraphPosition.y);
 					var unmodifiedNode = node;
 					var drawer = NodeEditorCacher.Editors[unmodifiedNode.GetType()];
-					var windowRect = new Rect(unmodifiedNode.EditorPosition + graphPos, new Vector2(216f, 77f));
+					var finalPos = unmodifiedNode.EditorPosition + graphPos;
+					var windowRect = new Rect(Mathf.Round(finalPos.x), Mathf.Round(finalPos.y), 216f, 77f);
 					// Checks if this node has inputs we need to draw.
 					if (unmodifiedNode.SourceIds != null && 0 < unmodifiedNode.SourceIds.Count && drawer.Linkers.Count == unmodifiedNode.SourceIds.Count)
 					{

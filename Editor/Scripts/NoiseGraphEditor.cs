@@ -3,6 +3,7 @@ using UnityEditor;
 using System.Collections.Generic;
 using System;
 using LunraGames;
+using LunraGamesEditor;
 using LunraGames.NoiseMaker;
 
 namespace LunraGamesEditor.NoiseMaker
@@ -114,7 +115,7 @@ namespace LunraGamesEditor.NoiseMaker
 					var helpboxName = StringExtensions.IsNullOrWhiteSpace(property.Name) ? "with a null name" : "\""+property.Name+"\"";
 					var changed = false;
 
-					if (value == null) EditorGUILayout.HelpBox("The null value of property "+helpboxName+" is not supported." , MessageType.Error);
+					if (value == null) EditorGUILayout.HelpBox("The null value of property " + helpboxName + " is not supported.", MessageType.Error);
 					else if (value is float)
 					{
 						var typedValue = (float)value;
@@ -130,15 +131,20 @@ namespace LunraGamesEditor.NoiseMaker
 						var typedValue = (bool)value;
 						property.Value = Deltas.DetectDelta(typedValue, EditorGUILayout.Toggle(propertyName, typedValue), ref changed);
 					}
-					else if (value is Enum) 
+					else if (value is Enum)
 					{
 						var typedValue = (Enum)value;
 						property.Value = Deltas.DetectDelta(typedValue, EditorGUILayout.EnumPopup(propertyName, typedValue), ref changed);
-					} 
-					else if (value is Vector3) 
+					}
+					else if (value is Vector3)
 					{
 						var typedValue = (Vector3)value;
 						property.Value = Deltas.DetectDelta(typedValue, EditorGUILayout.Vector3Field(propertyName, typedValue), ref changed);
+					}
+					else if (value is Color)
+					{
+						var typedValue = (Color)value;
+						property.Value = Deltas.DetectDelta(typedValue, EditorGUILayout.ColorField(propertyName, typedValue), ref changed);
 					}
 					else if (value is AnimationCurve)
 					{
@@ -155,7 +161,15 @@ namespace LunraGamesEditor.NoiseMaker
 
 						property.Value = typedValue;
 					}
-					else EditorGUILayout.HelpBox("Property "+helpboxName+" is of unsupported type \""+value.GetType()+"\".", MessageType.Error);
+					else
+					{
+						GUILayout.BeginHorizontal();
+						{
+							EditorGUILayout.HelpBox("Property " + helpboxName + " is of unsupported type \"" + value.GetType() + "\".", MessageType.Error);
+							if (GUILayout.Button("Context", EditorStyles.miniButton, GUILayout.Height(40f))) DebugExtensions.OpenFileAtContext();
+						}
+						GUILayout.EndHorizontal();
+					}
 
 					if (changed) changedProperty = property;
 				}
