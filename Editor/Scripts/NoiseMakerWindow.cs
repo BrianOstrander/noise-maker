@@ -896,8 +896,9 @@ namespace LunraGamesEditor.NoiseMaker
 				Reset();
 				return;
 			}
-
+			var updatedAt = config.UpdatedAt;
 			config.Noise = Graph;
+			if (updatedAt == config.UpdatedAt) return;
 			EditorUtility.SetDirty(config);
 			AssetDatabase.SaveAssets();
 			AssetDatabase.Refresh();

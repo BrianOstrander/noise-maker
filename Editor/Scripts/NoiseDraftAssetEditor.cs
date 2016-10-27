@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.Collections.Generic;
+using Object = UnityEngine.Object;
 using System;
 using LunraGames;
 using LunraGames.NoiseMaker;
@@ -10,9 +10,12 @@ namespace LunraGamesEditor.NoiseMaker
 	[CustomEditor(typeof(NoiseDraftAsset), true)]
 	public class NoiseDraftAssetEditor : Editor
 	{
-		const string AdvancedShownKey = "LG_NoiseMaker_NoiseGraphAdvancedShown";
+		Texture2D Preview;
 
-		static bool AdvancedShown { get { return EditorPrefs.GetBool(AdvancedShownKey, false); } set { EditorPrefs.SetBool(AdvancedShownKey, value); } }
+		public override Texture2D RenderStaticPreview(string assetPath, Object[] subAssets, int width, int height)
+		{
+			return Preview ?? (Preview = Instantiate(NoiseMakerConfig.Instance.NoiseDraftIcon));
+		}
 
 		public override void OnInspectorGUI()
 		{
@@ -36,7 +39,7 @@ namespace LunraGamesEditor.NoiseMaker
 
 			typedTarget.Noise =	Deltas.DetectDelta(typedTarget.Noise, EditorGUILayout.ObjectField("Noise", typedTarget.Noise, typeof(NoiseAsset), false) as NoiseAsset, ref dirty);
 
-			try { dirty = DrawProperties(typedTarget.Assets) || dirty; }
+			try { dirty = DrawProperties(typedTarget, typedTarget.Assets) || dirty; }
 			catch (ExitGUIException) {}
 			catch (Exception e)
 			{
@@ -47,15 +50,14 @@ namespace LunraGamesEditor.NoiseMaker
 			if (dirty) EditorUtility.SetDirty(typedTarget);
 		}
 
-		bool DrawProperties(params Property[] properties)
+		bool DrawProperties(NoiseDraftAsset asset, params Property[] properties)
 		{
 			if (properties == null) return false;
 
 			var rootChanged = false;
 
 			GUI.color = LunraGamesEditor.NoiseMaker.Styles.RootColor;
-			GUILayout.Label("Todo: seed");
-			//Graph.Seed = Deltas.DetectDelta(Graph.Seed, EditorGUILayout.IntField("Root Seed", Graph.Seed), ref rootChanged);
+			asset.Seed = Deltas.DetectDelta(asset.Seed, EditorGUILayout.IntField("Root Seed", asset.Seed), ref rootChanged);
 			GUI.color = Color.white;
 
 			Property changedProperty = null;

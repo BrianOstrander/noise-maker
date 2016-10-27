@@ -11,6 +11,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1cf7838657b8494db8d0753cd21b787, type: 3}
   m_Name: NoiseMakerConfig
   m_EditorClassIdentifier: 
+  NoiseIconPro: {fileID: 2800000, guid: d6c08db963d924730937b416393e0e23, type: 3}
+  NoiseIconPeasant: {fileID: 2800000, guid: d6c08db963d924730937b416393e0e23, type: 3}
+  NoiseDraftIconPro: {fileID: 2800000, guid: 1a69a62fdd7f341ce822805a3af8c752, type: 3}
+  NoiseDraftIconPeasant: {fileID: 2800000, guid: 1a69a62fdd7f341ce822805a3af8c752,
+    type: 3}
   LoadingPinwheels:
   - {fileID: 2800000, guid: 8b15f23f8680c46a9b19756043f16c25, type: 3}
   - {fileID: 2800000, guid: 2f51b325d864a48e48ccf44e9288e32c, type: 3}

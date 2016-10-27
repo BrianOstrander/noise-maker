@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -11,6 +10,7 @@ namespace LunraGames.NoiseMaker
 		NoiseAsset _Noise;
 		[SerializeField]
 		Property[] _Assets;
+		public int Seed;
 
 		public NoiseAsset Noise
 		{
@@ -20,14 +20,15 @@ namespace LunraGames.NoiseMaker
 				if (_Noise == value) return;
 
 				_Noise = value;
+				UpdatedAt = DateTime.Now;
 
 				if (value == null)
 				{
 					Assets = null;
 					return;
 				}
-
-				Assets = MergedAssets(Assets, _Noise);
+				var noise = _Noise.Noise;
+				Assets = MergedAssets(Assets, noise);
 			}
 		}
 
@@ -36,7 +37,7 @@ namespace LunraGames.NoiseMaker
 			get 
 			{
 				if (Noise == null || Noise.UpdatedAt < UpdatedAt) return _Assets;
-				_Assets = MergedAssets(_Assets, Noise);
+				_Assets = MergedAssets(_Assets, Noise.Noise);
 				UpdatedAt = DateTime.Now;
 				return _Assets;
 			}
@@ -66,10 +67,10 @@ namespace LunraGames.NoiseMaker
 			return draft;
 		}
 
-		static Property[] MergedAssets(Property[] oldAssets, NoiseAsset noise)
+		static Property[] MergedAssets(Property[] oldAssets, Noise noise)
 		{
 			oldAssets = oldAssets ?? new Property[0];
-			var newAssets = noise.Noise.PropertyNodes.Select(p => p.Property).ToList();
+			var newAssets = noise.PropertyNodes.Select(p => p.Property).ToList();
 
 			foreach (var asset in newAssets)
 			{
