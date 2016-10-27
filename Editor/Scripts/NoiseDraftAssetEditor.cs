@@ -3,7 +3,6 @@ using UnityEditor;
 using System.Collections.Generic;
 using System;
 using LunraGames;
-using LunraGamesEditor;
 using LunraGames.NoiseMaker;
 
 namespace LunraGamesEditor.NoiseMaker
@@ -46,27 +45,13 @@ namespace LunraGamesEditor.NoiseMaker
 					{
 						var property = new Property();
 						property.Name = propertyNode.Name;
-						property.Value = propertyNode.RawPropertyValue;
-						Debug.Log(propertyNode.RawPropertyValue);
+						property.SetValue(propertyNode.RawPropertyValue, propertyNode.OutputType);
 						newProperties.Add(property);
 					}
 				}
 				typedTarget.Assets = newProperties.ToArray();
 			}
 			dirty = dirty || noiseChanged;
-
-			//if (AdvancedShown = EditorGUILayout.Foldout(AdvancedShown, "Advanced"))
-			//{
-			//	EditorGUILayout.HelpBox("Messing with the properties below could irreversibly destroy your data, so be careful!", MessageType.Warning);
-			//	GUILayout.BeginHorizontal();
-			//	{
-			//		if (GUILayout.Button("Copy Graph Json", EditorStyles.miniButtonLeft)) EditorGUIUtility.systemCopyBuffer = NoiseProperty.stringValue;
-			//		if (GUILayout.Button("Paste Graph Json", EditorStyles.miniButtonRight))	NoiseProperty.stringValue = Deltas.DetectDelta<string>(NoiseProperty.stringValue, EditorGUIUtility.systemCopyBuffer, ref graphChanged);
-			//		if (GUILayout.Button("Copy Properties Json", EditorStyles.miniButtonLeft)) EditorGUIUtility.systemCopyBuffer = AssetsProperty.stringValue;
-			//		if (GUILayout.Button("Paste Properties Json", EditorStyles.miniButtonRight)) AssetsProperty.stringValue = Deltas.DetectDelta<string>(AssetsProperty.stringValue, EditorGUIUtility.systemCopyBuffer, ref propertiesChanged);
-			//	}
-			//	GUILayout.EndHorizontal();
-			//}
 
 			try { dirty = DrawProperties(typedTarget.Assets); }
 			catch (Exception e)
@@ -75,7 +60,7 @@ namespace LunraGamesEditor.NoiseMaker
 				if (GUILayout.Button("Print Exception")) Debug.LogException(e);
 			}
 
-			if (dirty) EditorUtility.SetDirty(target);
+			if (dirty) EditorUtility.SetDirty(typedTarget);
 		}
 
 		bool DrawProperties(params Property[] properties)
@@ -91,49 +76,44 @@ namespace LunraGamesEditor.NoiseMaker
 			foreach (var property in properties)
 			{
 				var unmodifiedProperty = property;
-				if (unmodifiedProperty == null)
-				{
-					EditorGUILayout.HelpBox("Null properties are not supported.", MessageType.Error);
-					continue;
-				}
 
 				var value = unmodifiedProperty.Value;
+				var type = unmodifiedProperty.Type;
 				var propertyName = StringExtensions.IsNullOrWhiteSpace(unmodifiedProperty.Name) ? "Null name" : unmodifiedProperty.Name;
 				var helpboxName = StringExtensions.IsNullOrWhiteSpace(unmodifiedProperty.Name) ? "with a null name" : "\""+unmodifiedProperty.Name+"\"";
 				var changed = false;
 
-				if (value == null) EditorGUILayout.HelpBox("The null value of property " + helpboxName + " is not supported.", MessageType.Error);
-				else if (value is float)
+				if (type == typeof(float))
 				{
 					var typedValue = (float)value;
-					unmodifiedProperty.Value = Deltas.DetectDelta(typedValue, EditorGUILayout.FloatField(propertyName, typedValue), ref changed);
+					unmodifiedProperty.SetValue(Deltas.DetectDelta(typedValue, EditorGUILayout.FloatField(propertyName, typedValue), ref changed));
 				}
-				else if (value is int)
+				else if (type == typeof(int))
 				{
 					var typedValue = (int)value;
-					unmodifiedProperty.Value = Deltas.DetectDelta(typedValue, EditorGUILayout.IntField(propertyName, typedValue), ref changed);
+					unmodifiedProperty.SetValue(Deltas.DetectDelta(typedValue, EditorGUILayout.IntField(propertyName, typedValue), ref changed));
 				}
-				else if (value is bool)
+				else if (type == typeof(bool))
 				{
 					var typedValue = (bool)value;
-					unmodifiedProperty.Value = Deltas.DetectDelta(typedValue, EditorGUILayout.Toggle(propertyName, typedValue), ref changed);
+					unmodifiedProperty.SetValue(Deltas.DetectDelta(typedValue, EditorGUILayout.Toggle(propertyName, typedValue), ref changed));
 				}
-				else if (value is Enum)
+				else if (typeof(Enum).IsAssignableFrom(type))
 				{
 					var typedValue = (Enum)value;
-					unmodifiedProperty.Value = Deltas.DetectDelta(typedValue, EditorGUILayout.EnumPopup(propertyName, typedValue), ref changed);
+					unmodifiedProperty.SetValue(Deltas.DetectDelta(typedValue, EditorGUILayout.EnumPopup(propertyName, typedValue), ref changed), type);
 				}
-				else if (value is Vector3)
+				else if (type == typeof(Vector3))
 				{
 					var typedValue = (Vector3)value;
-					unmodifiedProperty.Value = Deltas.DetectDelta(typedValue, EditorGUILayout.Vector3Field(propertyName, typedValue), ref changed);
+					unmodifiedProperty.SetValue(Deltas.DetectDelta(typedValue, EditorGUILayout.Vector3Field(propertyName, typedValue), ref changed));
 				}
-				else if (value is Color)
+				else if (type == typeof(Color))
 				{
 					var typedValue = (Color)value;
-					unmodifiedProperty.Value = Deltas.DetectDelta(typedValue, EditorGUILayout.ColorField(propertyName, typedValue), ref changed);
+					unmodifiedProperty.SetValue(Deltas.DetectDelta(typedValue, EditorGUILayout.ColorField(propertyName, typedValue), ref changed));
 				}
-				else if (value is AnimationCurve)
+				else if (type == typeof(AnimationCurve))
 				{
 					var typedValue = (AnimationCurve)value;
 
@@ -146,13 +126,20 @@ namespace LunraGamesEditor.NoiseMaker
 					typedValue = EditorGUILayout.CurveField(propertyName, unmodifiedCurve);
 					changed = changed || !AnimationCurveExtensions.CurvesEqual(unmodifiedCurve, typedValue);
 
-					unmodifiedProperty.Value = typedValue;
+					unmodifiedProperty.SetValue(typedValue);
+				}
+				else if (type == typeof(Texture2D))
+				{
+					// weird check here because unity lies about serialized fields being null.
+					var typedValue = value == null || value.Equals(null) ? null : (Texture2D)value;
+					var result = EditorGUILayout.ObjectField(propertyName, typedValue, typeof(Texture2D), false);
+					unmodifiedProperty.SetValue(Deltas.DetectDelta(typedValue, result == null ? null : result as Texture2D, ref changed));
 				}
 				else
 				{
 					GUILayout.BeginHorizontal();
 					{
-						EditorGUILayout.HelpBox("Property " + helpboxName + " is of unsupported type \"" + value.GetType() + "\".", MessageType.Error);
+						EditorGUILayout.HelpBox("Property " + helpboxName + " is of unsupported type \"" + type + "\".", MessageType.Error);
 						if (GUILayout.Button("Context", EditorStyles.miniButton, GUILayout.Height(40f))) DebugExtensions.OpenFileAtContext();
 					}
 					GUILayout.EndHorizontal();

@@ -13,45 +13,66 @@ namespace LunraGames.NoiseMaker
 		[SerializeField, JsonProperty]
 		string SerializedValue;
 		[SerializeField, JsonProperty]
-		string TypeName;
-		[SerializeField]
+		string SerializedType;
+		[SerializeField, JsonIgnore]
 		Object AssetValue;
 
 		Type _Type;
 
-		Type Type 
+		[JsonIgnore]
+		public Type Type 
 		{
-			get { return _Type ?? (_Type = string.IsNullOrEmpty(TypeName) ? null : Type.GetType(TypeName)); }
-			set 
+			get 
+			{ 
+				return _Type ?? (_Type = string.IsNullOrEmpty(SerializedType) ? null : Type.GetType(SerializedType)); 
+			}
+			private set 
 			{
 				_Type = value;
-				TypeName = value == null ? null : value.FullName;
+				SerializedType = value == null ? null : value.AssemblyQualifiedName;
 			}
 		}
 
 		object _Value;
 
+		// todo: this method will override Type sometimes, so we should probably be better about not doing that...
 		[JsonIgnore]
 		public object Value
 		{
 			get 
 			{
-				if (Type == typeof(Object)) return AssetValue;
-				if (string.IsNullOrEmpty(SerializedValue)) return null;
-				return _Value ?? (_Value = Serialization.DeserializeJson(Type, SerializedValue, verbose: true));
+				if (typeof(Object).IsAssignableFrom(Type)) return AssetValue;
+				if (_Value == null)
+				{
+					_Value = Serialization.DeserializeJson(Type, SerializedValue, verbose: true);
+					if (_Value is JObject) _Value = (_Value as JObject).ToObject(Type);
+				}
+				return _Value;
 			}
-			set
+			private set
 			{
-				Type = value == null ? null : value.GetType();
-
 				_Value = null;
 				AssetValue = null;
 
 				if (value == null) return;
 
-				if (Type == typeof(Object)) AssetValue = value as Object;
+				if (typeof(Object).IsAssignableFrom(Type))
+				{
+					AssetValue = value as Object;
+				}
 				else SerializedValue = Serialization.SerializeJson(value, true);
 			}
+		}
+
+		public void SetValue<T>(T value)
+		{
+			SetValue(value, typeof(T));
+		}
+
+		public void SetValue(object value, Type type)
+		{
+			Value = value;
+			Type = type;
 		}
 	}
 }
