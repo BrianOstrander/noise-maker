@@ -11,7 +11,7 @@ namespace LunraGamesEditor.NoiseMaker
 	{
 		static Dictionary<string, Vector2> ScrollPositions = new Dictionary<string, Vector2>();
 
-		public override INode Draw(Graph graph, INode node)
+		public override INode Draw(Noise graph, INode node)
 		{
 			var terrace = node as TerraceNode;
 

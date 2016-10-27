@@ -10,7 +10,7 @@ namespace LunraGamesEditor.NoiseMaker
 	{
 		Dictionary<string, int> LastSeeds = new Dictionary<string, int>();
 
-		public override INode Draw(Graph graph, INode node)
+		public override INode Draw(Noise graph, INode node)
 		{
 			var seedNode = node as SeedNode;
 			var currSeed = seedNode.GetValue(graph);

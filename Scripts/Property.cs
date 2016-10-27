@@ -1,6 +1,8 @@
 ﻿using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace LunraGames.NoiseMaker
 {
@@ -8,32 +10,47 @@ namespace LunraGames.NoiseMaker
 	public class Property
 	{
 		public string Name;
-		[JsonProperty]
+		[SerializeField, JsonProperty]
+		string SerializedValue;
+		[SerializeField, JsonProperty]
+		string TypeName;
+		[SerializeField]
+		Object AssetValue;
+
+		Type _Type;
+
+		Type Type 
+		{
+			get { return _Type ?? (_Type = string.IsNullOrEmpty(TypeName) ? null : Type.GetType(TypeName)); }
+			set 
+			{
+				_Type = value;
+				TypeName = value == null ? null : value.FullName;
+			}
+		}
+
 		object _Value;
-		[JsonProperty]
-		Type Type;
 
 		[JsonIgnore]
 		public object Value
 		{
 			get 
 			{
-				if (_Value == null) return null;
-
-				// hack to fix newtonsoft defaulting objects to doubles.
-				if (_Value is double) return (_Value = Convert.ToSingle((double)_Value));
-				if (_Value is long) return (_Value = Convert.ToInt32((long)_Value));
-				// Certain objects have a hard time escaping being JObjects, since _Value's type is just object, 
-				// so we explicitely convert them here.
-				if (_Value is JObject) return (_Value = (_Value as JObject).ToObject(Type));
-				if (typeof(Enum).IsAssignableFrom(Type)) return (_Value = _Value is Enum ? _Value : Enum.Parse(Type, Enum.GetNames(Type)[(int)_Value]));
-
-				return _Value;
+				if (Type == typeof(Object)) return AssetValue;
+				if (string.IsNullOrEmpty(SerializedValue)) return null;
+				return _Value ?? (_Value = Serialization.DeserializeJson(Type, SerializedValue, verbose: true));
 			}
 			set
 			{
-				_Value = value;
 				Type = value == null ? null : value.GetType();
+
+				_Value = null;
+				AssetValue = null;
+
+				if (value == null) return;
+
+				if (Type == typeof(Object)) AssetValue = value as Object;
+				else SerializedValue = Serialization.SerializeJson(value, true);
 			}
 		}
 	}

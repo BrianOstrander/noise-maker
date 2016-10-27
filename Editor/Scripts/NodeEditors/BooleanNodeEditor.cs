@@ -7,7 +7,7 @@ namespace LunraGamesEditor.NoiseMaker
 	[NodeDrawer(typeof(BooleanNode), Strings.Properties, "Boolean")]
 	public class BooleanNodeEditor : NodeEditor
 	{
-		public override INode Draw(Graph graph, INode node)
+		public override INode Draw(Noise graph, INode node)
 		{
 			var booleanNode = node as BooleanNode;
 

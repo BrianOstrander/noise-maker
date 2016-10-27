@@ -14,7 +14,7 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(3)]
 		public RangeOverrides RangeOverride;
 
-		public override float GetValue (Graph graph)
+		public override float GetValue (Noise graph)
 		{
 			var values = NullableValues(graph);
 

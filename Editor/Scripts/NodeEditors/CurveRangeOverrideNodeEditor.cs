@@ -7,7 +7,7 @@ namespace LunraGamesEditor.NoiseMaker
 	[NodeDrawer(typeof(CurveRangeOverrideNode), Strings.Properties, "Curve Override")]
 	public class CurveRangeOverrideNodeEditor : NodeEditor
 	{
-		public override INode Draw(Graph graph, INode node)
+		public override INode Draw(Noise graph, INode node)
 		{
 			var overrideNode = node as CurveRangeOverrideNode;
 

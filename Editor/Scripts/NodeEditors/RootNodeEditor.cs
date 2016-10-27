@@ -9,7 +9,7 @@ namespace LunraGamesEditor.NoiseMaker
 	[NodeDrawer(typeof(RootNode), Strings.Hidden, "Root", Strings.SpecifyAnInput)]
 	public class RootNodeEditor : NodeEditor 
 	{
-		public override INode Draw(Graph graph, INode node)
+		public override INode Draw(Noise graph, INode node)
 		{
 			var rootNode = DrawFields(graph, node) as RootNode;
 

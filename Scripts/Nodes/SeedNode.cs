@@ -7,7 +7,7 @@ namespace LunraGames.NoiseMaker
 		int? Seed;
 		int LastRootSeed;
 
-		public override int GetValue (Graph graph)
+		public override int GetValue (Noise graph)
 		{
 			if (!Seed.HasValue || LastRootSeed != graph.Seed) 
 			{

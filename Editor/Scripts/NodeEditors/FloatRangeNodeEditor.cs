@@ -7,7 +7,7 @@ namespace LunraGamesEditor.NoiseMaker
 	[NodeDrawer(typeof(FloatRangeNode), Strings.Utility, "Float Range")]
 	public class FloatRangeNodeEditor : NodeEditor 
 	{
-		public override INode Draw(Graph graph, INode node)
+		public override INode Draw(Noise graph, INode node)
 		{
 			var rangeNode = node as FloatRangeNode;
 

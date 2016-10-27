@@ -11,7 +11,7 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(0)]
 		public float Constant;
 
-		public override IModule GetValue (Graph graph)
+		public override IModule GetValue (Noise graph)
 		{
 			var constant = Value == null ? new Constant(Constant) : Value as Constant;
 

@@ -7,7 +7,7 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(0)]
 		public float Frequency;
 
-		public override IModule GetValue (Graph graph)
+		public override IModule GetValue (Noise graph)
 		{
 			var spheres = Value == null ? new Spheres() : Value as Spheres;
 

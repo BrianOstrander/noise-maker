@@ -16,7 +16,7 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(3, 1, int.MaxValue)]
 		public int OverrideSamples = 1;
 
-		public override float GetValue(Graph graph)
+		public override float GetValue(Noise graph)
 		{
 			var values = NullableValues(graph);
 
@@ -29,7 +29,7 @@ namespace LunraGames.NoiseMaker
 
 			switch(rangeOverride)
 			{
-				case CurveRangeOverrides.None: return Curve.Evaluate((new Demon(seed)).GetNextFloat(Curve.keys.Min(k => k.time), Curve.keys.Max(k => k.time)));
+				case CurveRangeOverrides.None: return curve.Evaluate((new Demon(seed)).GetNextFloat(curve.keys.Min(k => k.time), curve.keys.Max(k => k.time)));
 				case CurveRangeOverrides.MinimumKey: return curve.MinimumKey();
 				case CurveRangeOverrides.MaximumKey: return curve.MaximumKey();
 				case CurveRangeOverrides.AverageKey: return curve.AverageKey();

@@ -19,7 +19,7 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
-		public override T GetValue (Graph graph)
+		public override T GetValue (Noise graph)
 		{
 			Value = PropertyValue;
 			return Value;

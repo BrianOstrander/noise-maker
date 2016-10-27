@@ -75,7 +75,7 @@ namespace LunraGamesEditor.NoiseMaker
 
 		protected static List<NodePreview> Previews = new List<NodePreview>();
 
-		protected NodePreview GetPreview(Graph graph, INode node)
+		protected NodePreview GetPreview(Noise graph, INode node)
 		{
 			var preview = Previews.FirstOrDefault(p => p.Id == node.Id);
 
@@ -178,7 +178,7 @@ namespace LunraGamesEditor.NoiseMaker
 			return currRect;
 		}
 
-		public INode DrawFields(Graph graph, INode node, bool showPreview = true)
+		public INode DrawFields(Noise graph, INode node, bool showPreview = true)
 		{
 			var wasEnabled = GUI.enabled;
 
@@ -331,7 +331,7 @@ namespace LunraGamesEditor.NoiseMaker
 			return preview == null ? long.MinValue : preview.LastUpdated;
 		}
 
-		public virtual INode Draw(Graph graph, INode node)
+		public virtual INode Draw(Noise graph, INode node)
 		{
 			return DrawFields(graph, node);
 		}

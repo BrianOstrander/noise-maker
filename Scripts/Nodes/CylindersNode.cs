@@ -11,7 +11,7 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(0)]
 		public float Frequency = 0.02f;
 
-		public override IModule GetValue (Graph graph)
+		public override IModule GetValue (Noise graph)
 		{
 			var cylinders = Value == null ? new Cylinders() : Value as Cylinders;
 

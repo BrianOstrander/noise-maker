@@ -72,9 +72,9 @@ namespace LunraGames.NoiseMaker
 
 		public Type OutputType { get { return typeof(T); } }
 
-		public abstract T GetValue(Graph graph);
+		public abstract T GetValue(Noise graph);
 
-		public object GetRawValue(Graph graph)
+		public object GetRawValue(Noise graph)
 		{
 			return GetValue(graph);
 		}
@@ -85,7 +85,7 @@ namespace LunraGames.NoiseMaker
 		/// <param name="graph">The parent graph.</param>
 		/// <param name="sources">Sources.</param>
 		// todo: this seems very redundent...
-		protected List<object> Values(Graph graph, params string[] sources)
+		protected List<object> Values(Noise graph, params string[] sources)
 		{
 			if (graph == null) throw new ArgumentNullException("graph");
 			if (graph.AllNodes == null) throw new ArgumentException("graph.Nodes");
@@ -108,7 +108,7 @@ namespace LunraGames.NoiseMaker
 		/// <returns>The sources.</returns>
 		/// <param name="graph">The parent graph.</param>
 		/// <param name="sources">Sources.</param>
-		protected List<object> NullableValues(Graph graph, params string[] sources)
+		protected List<object> NullableValues(Noise graph, params string[] sources)
 		{
 			if (graph == null) throw new ArgumentNullException("graph");
 			if (graph.AllNodes == null) throw new ArgumentException("graph.Nodes");
@@ -194,7 +194,7 @@ namespace LunraGames.NoiseMaker
 
 		protected bool InvalidSourceCount { get { return SourceIds == null || SourceIds.Count != SourceCount; } }
 
-		protected S GetLocalIfValueNull<S>(S localValue, int valueIndex,  Graph graph)
+		protected S GetLocalIfValueNull<S>(S localValue, int valueIndex,  Noise graph)
 		{
 			return GetLocalIfValueNull<S>(localValue, valueIndex, NullableValues(graph));
 		}
@@ -211,7 +211,7 @@ namespace LunraGames.NoiseMaker
 			return (S)value;
 		}
 
-		public bool HasAncestor(Graph graph, string ancestorId)
+		public bool HasAncestor(Noise graph, string ancestorId)
 		{
 			if (string.IsNullOrEmpty(ancestorId)) return false;
 			if (ancestorId == Id) return true;

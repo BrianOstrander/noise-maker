@@ -20,7 +20,7 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(5)]
 		public int Seed = DemonUtility.NextInteger;
 
-		public override IModule GetValue (Graph graph)
+		public override IModule GetValue (Noise graph)
 		{
 			var values = NullableValues(graph);
 

@@ -15,7 +15,7 @@ namespace LunraGames.NoiseMaker
 		public bool GenerateOnAwake;
 		public bool OverrideSeed;
 		public int Seed;
-		public NoiseGraph NoiseGraph;
+		public NoiseAsset NoiseGraph;
 		public MercatorMap MercatorMap;
 		public int MapWidth;
 		public int MapHeight;
@@ -49,7 +49,7 @@ namespace LunraGames.NoiseMaker
 
 			if (CachedMesh == null) CachedMesh = meshFilter.sharedMesh;
 
-			var graph = NoiseGraph.GraphInstantiation;
+			var graph = NoiseGraph.Noise;
 			var map = MercatorMap.MercatorInstantiation;
 
 			if (graph == null) throw new NullReferenceException("Couldn't instantiate the NoiseGraph");
@@ -70,7 +70,7 @@ namespace LunraGames.NoiseMaker
 			var mesh = Instantiate(CachedMesh);
 
 			var verts = mesh.vertices;
-			Graph.GetSphereAltitudes(sphere, ref verts, Datum, Deviation);
+			Noise.GetSphereAltitudes(sphere, ref verts, Datum, Deviation);
 			mesh.vertices = verts;
 
 			meshFilter.sharedMesh = mesh;

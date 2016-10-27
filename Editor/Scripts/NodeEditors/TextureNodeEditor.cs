@@ -8,7 +8,7 @@ namespace LunraGamesEditor.NoiseMaker
 	[NodeDrawer(typeof(TextureNode), Strings.Properties, "Texture")]
 	public class TextureNodeEditor : NodeEditor
 	{
-		public override INode Draw(Graph graph, INode node)
+		public override INode Draw(Noise graph, INode node)
 		{
 			var textureNode = node as TextureNode;
 

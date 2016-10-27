@@ -18,7 +18,7 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		public List<Vector2> Points;
 
-		public override IModule GetValue (Graph graph)
+		public override IModule GetValue (Noise graph)
 		{
 			var source = GetLocalIfValueNull(Source, 0, graph);
 

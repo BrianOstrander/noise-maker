@@ -7,7 +7,7 @@ namespace LunraGamesEditor.NoiseMaker
 	[NodeDrawer(typeof(ColorNode), Strings.Properties, "Color")]
 	public class ColorNodeEditor : NodeEditor
 	{
-		public override INode Draw(Graph graph, INode node)
+		public override INode Draw(Noise graph, INode node)
 		{
 			var colorNode = node as ColorNode;
 

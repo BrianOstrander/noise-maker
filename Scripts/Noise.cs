@@ -8,7 +8,7 @@ using LibNoise.Models;
 
 namespace LunraGames.NoiseMaker
 {
-	public class Graph
+	public class Noise
 	{
 		const float DefaultDatum = 0.5f;
 		const float DefaultDeviation = 0.1f;
@@ -132,7 +132,7 @@ namespace LunraGames.NoiseMaker
 			{
 				// Get the value of the specified vert, by converting it's euler position to a latitude and longitude.
 				var vert = vertices[i];
-				var latLong = SphereUtils.CartesianToPolar(vert.normalized);
+				var latLong = SphereUtils.CartesianToGeographic(vert.normalized);
 				vertices[i] = (vert.normalized * datum) + (vert.normalized * (float)sphere.GetValue(latLong.x, latLong.y) * (datum * deviation));
 			}
 		}
@@ -157,6 +157,19 @@ namespace LunraGames.NoiseMaker
 			CleanCache();
 		}
 
+		public T Get<T>(string name)
+		{
+			var property = PropertyNodes.FirstOrDefault(p => p.Name == name && (p as INode).OutputType == typeof(T));
+
+			if (property == null)
+			{
+				Debug.LogError("No property named \"" + name + "\" found, returning default value");
+				return default(T);
+			}
+
+			return (T)property.RawPropertyValue;
+		}
+
 		public void Set(string name, bool value) { SetRaw(name, value); }
 
 		public void Set(string name, AnimationCurve value) { SetRaw(name, value); }
@@ -173,20 +186,7 @@ namespace LunraGames.NoiseMaker
 
 		public void Set(string name, Vector3 value) { SetRaw(name, value); }
 
-		public T Get<T>(string name)
-		{
-			var property = PropertyNodes.FirstOrDefault(p => p.Name == name && (p as INode).OutputType == typeof(T));
-
-			if (property == null) 
-			{
-				Debug.LogError("No property named \"" + name + "\" found, returning default value");
-				return default(T);
-			}
-
-			return (T)property.RawPropertyValue;
-		}
-
-		void SetRaw(string name, object value)
+		public void SetRaw(string name, object value)
 		{
 			var property = PropertyNodes.FirstOrDefault(p => p.Name == name);
 
