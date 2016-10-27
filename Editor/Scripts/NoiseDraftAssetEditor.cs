@@ -34,26 +34,10 @@ namespace LunraGamesEditor.NoiseMaker
 
 			GUI.enabled = editingAllowed;
 
-			var noiseChanged = false;
-			typedTarget.Noise =	Deltas.DetectDelta(typedTarget.Noise, EditorGUILayout.ObjectField("Noise", typedTarget.Noise, typeof(NoiseAsset), false) as NoiseAsset, ref noiseChanged);
-			if (noiseChanged)
-			{
-				var newProperties = new List<Property>();
-				if (typedTarget.Noise != null)
-				{
-					foreach (var propertyNode in typedTarget.Noise.Noise.PropertyNodes)
-					{
-						var property = new Property();
-						property.Name = propertyNode.Name;
-						property.SetValue(propertyNode.RawPropertyValue, propertyNode.OutputType);
-						newProperties.Add(property);
-					}
-				}
-				typedTarget.Assets = newProperties.ToArray();
-			}
-			dirty = dirty || noiseChanged;
+			typedTarget.Noise =	Deltas.DetectDelta(typedTarget.Noise, EditorGUILayout.ObjectField("Noise", typedTarget.Noise, typeof(NoiseAsset), false) as NoiseAsset, ref dirty);
 
-			try { dirty = DrawProperties(typedTarget.Assets); }
+			try { dirty = DrawProperties(typedTarget.Assets) || dirty; }
+			catch (ExitGUIException) {}
 			catch (Exception e)
 			{
 				EditorGUILayout.HelpBox("Unable to draw properties, exception occurred: "+e.Message, MessageType.Error);
@@ -65,6 +49,8 @@ namespace LunraGamesEditor.NoiseMaker
 
 		bool DrawProperties(params Property[] properties)
 		{
+			if (properties == null) return false;
+
 			var rootChanged = false;
 
 			GUI.color = LunraGamesEditor.NoiseMaker.Styles.RootColor;
@@ -73,6 +59,7 @@ namespace LunraGamesEditor.NoiseMaker
 			GUI.color = Color.white;
 
 			Property changedProperty = null;
+
 			foreach (var property in properties)
 			{
 				var unmodifiedProperty = property;

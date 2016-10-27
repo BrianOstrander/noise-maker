@@ -6,6 +6,18 @@ namespace LunraGamesEditor.NoiseMaker
 {
 	public class NoiseMakerConfig : EditorScriptableSingleton<NoiseMakerConfig>
 	{
+		public Texture2D NoiseIcon { get { return EditorGUIUtility.isProSkin ? NoiseIconPro : NoiseIconPeasant; } }
+		[SerializeField]
+		Texture2D NoiseIconPro;
+		[SerializeField]
+		Texture2D NoiseIconPeasant;
+
+		public Texture2D NoiseDraftIcon { get { return EditorGUIUtility.isProSkin ? NoiseDraftIconPro : NoiseDraftIconPeasant; } }
+		[SerializeField]
+		Texture2D NoiseDraftIconPro;
+		[SerializeField]
+		Texture2D NoiseDraftIconPeasant;
+
 		public Texture2D[] LoadingPinwheels;
 
 		#region Elevation preview resources

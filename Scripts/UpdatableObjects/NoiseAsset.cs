@@ -1,9 +1,8 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System;
 
 namespace LunraGames.NoiseMaker
 {
-	public class NoiseAsset : ScriptableObject 
+	public class NoiseAsset : UpdatableObject 
 	{
 		public string NoiseJson;
 
@@ -19,7 +18,12 @@ namespace LunraGames.NoiseMaker
 			}
 			set
 			{
-				NoiseJson = Serialization.SerializeJson(value, true);
+				var replacement = Serialization.SerializeJson(value, true);
+				if (replacement != NoiseJson)
+				{
+					NoiseJson = replacement;
+					UpdatedAt = DateTime.Now;
+				}
 			}
 		}
 	}

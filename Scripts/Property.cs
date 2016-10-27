@@ -35,7 +35,6 @@ namespace LunraGames.NoiseMaker
 
 		object _Value;
 
-		// todo: this method will override Type sometimes, so we should probably be better about not doing that...
 		[JsonIgnore]
 		public object Value
 		{
@@ -56,10 +55,7 @@ namespace LunraGames.NoiseMaker
 
 				if (value == null) return;
 
-				if (typeof(Object).IsAssignableFrom(Type))
-				{
-					AssetValue = value as Object;
-				}
+				if (typeof(Object).IsAssignableFrom(Type)) AssetValue = value as Object;
 				else SerializedValue = Serialization.SerializeJson(value, true);
 			}
 		}
@@ -71,8 +67,8 @@ namespace LunraGames.NoiseMaker
 
 		public void SetValue(object value, Type type)
 		{
-			Value = value;
 			Type = type;
+			Value = value;
 		}
 	}
 }

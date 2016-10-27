@@ -341,10 +341,7 @@ namespace LunraGamesEditor.NoiseMaker
 					windowRect = GUILayout.Window(unmodifiedNode.Id.GetHashCode(), windowRect, id =>
 					{
 						GUI.DragWindow(new Rect(0f, 0f, windowRect.width, 20f));
-						try
-						{
-							var result = drawer.Editor.Draw(Graph, unmodifiedNode);
-						}
+						try { drawer.Editor.Draw(Graph, unmodifiedNode); }
 						catch (Exception e)
 						{
 							// if we errored inside a guilayout begin / end, we want to try and print our helpbox inside a catch statement.
@@ -973,8 +970,14 @@ namespace LunraGamesEditor.NoiseMaker
 				}
 
 				// Open up existing file for editing.
-				SaveGuid = AssetDatabase.AssetPathToGUID(fromAssets ? path : "Assets"+path.Substring(Application.dataPath.Length));
-				var config = AssetDatabase.LoadAssetAtPath<NoiseAsset>(SavePath);
+				var guid = AssetDatabase.AssetPathToGUID(fromAssets ? path : "Assets"+path.Substring(Application.dataPath.Length));
+				var config = AssetDatabase.LoadAssetAtPath<NoiseAsset>(AssetDatabase.GUIDToAssetPath(guid));
+				if (config == null)
+				{
+					EditorUtility.DisplayDialog("Invalid", "The file \""+System.IO.Path.GetFileName(path)+"\" is not a valid Noise asset.", "Okay");
+					return;
+				}
+				SaveGuid = guid;
 				Graph = config.Noise;
 				State = States.Idle;
 

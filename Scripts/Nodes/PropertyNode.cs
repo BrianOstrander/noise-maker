@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
 {
@@ -27,6 +28,17 @@ namespace LunraGames.NoiseMaker
 
 		[JsonIgnore]
 		protected virtual T DefaultValue { get { return default(T); } }
+		[JsonIgnore]
+		public Property Property
+		{
+			get
+			{
+				var property = new Property();
+				property.Name = Name;
+				property.SetValue(PropertyValue);
+				return property;
+			}
+		}
 
 		public PropertyNode() 
 		{
