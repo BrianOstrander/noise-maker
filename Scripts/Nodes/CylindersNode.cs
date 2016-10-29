@@ -15,7 +15,7 @@ namespace LunraGames.NoiseMaker
 		{
 			var cylinders = Value == null ? new Cylinders() : Value as Cylinders;
 
-			cylinders.Frequency = GetLocalIfValueNull<float>(Frequency, 0, noise);
+			cylinders.Frequency = GetLocalIfValueNull(Frequency, 0, noise);
 
 			Value = cylinders;
 			return Value;

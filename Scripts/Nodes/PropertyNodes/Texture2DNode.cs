@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace LunraGames.NoiseMaker
 {
-	public class TextureNode : PropertyNode<Texture2D> 
+	public class Texture2DNode : PropertyNode<Texture2D> 
 	{
 		[JsonIgnore]
 		public override Texture2D PropertyValue

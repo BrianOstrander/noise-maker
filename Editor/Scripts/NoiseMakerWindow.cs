@@ -684,7 +684,7 @@ namespace LunraGamesEditor.NoiseMaker
 					{
 						// Get the value from the specified location, and run it through the selected previewer. 
 						var value = module.GetValue(x, y, 0f);
-						pixels[SphereUtils.PixelCoordinateToIndex(x, y, PreviewTexture.width, PreviewTexture.height)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
+						pixels[Texture2DExtensions.PixelCoordinateToIndex(x, y, PreviewTexture.width, PreviewTexture.height)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
 					}
 				}
 				PreviewTexture.SetPixels(pixels);
@@ -805,7 +805,7 @@ namespace LunraGamesEditor.NoiseMaker
 							for (var y = 0; y < resultHeight; y++)
 							{
 								var value = (float)module.GetValue(x, y, 0f);
-								pixels[SphereUtils.PixelCoordinateToIndex(x, y, resultWidth, resultHeight)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
+								pixels[Texture2DExtensions.PixelCoordinateToIndex(x, y, resultWidth, resultHeight)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
 							}
 						}
 					}
@@ -847,7 +847,7 @@ namespace LunraGamesEditor.NoiseMaker
 								var lat = SphereUtils.GetLatitude(y, resultHeight);
 								var lon = SphereUtils.GetLongitude(x, resultWidth);
 								var value = sphere.GetValue(lat, lon);
-								pixels[SphereUtils.PixelCoordinateToIndex(x, y, resultWidth, resultHeight)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
+								pixels[Texture2DExtensions.PixelCoordinateToIndex(x, y, resultWidth, resultHeight)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
 							}
 						}
 					}

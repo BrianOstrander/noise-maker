@@ -120,7 +120,7 @@ namespace LunraGamesEditor.NoiseMaker
 									for (var y = 0; y < height; y++)
 									{
 										var value = module.GetValue(x, y, 0f);
-										pixels[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = Previewer.Calculate(value, Previewer);
+										pixels[Texture2DExtensions.PixelCoordinateToIndex(x, y, width, height)] = Previewer.Calculate(value, Previewer);
 									}
 								}
 							},
@@ -230,8 +230,8 @@ namespace LunraGamesEditor.NoiseMaker
 					else
 					{
 						typedValue = (float)linkValue;
-						if (link.Min != null || link.Max != null) link.Field.SetValue(node, Deltas.DetectDelta<float>(typedValue, Mathf.Clamp(EditorGUILayout.DelayedFloatField(link.Name, typedValue), min, max), ref preview.Stale));
-						else link.Field.SetValue(node, Deltas.DetectDelta<float>(typedValue, EditorGUILayout.DelayedFloatField(link.Name, typedValue), ref preview.Stale));
+						if (link.Min != null || link.Max != null) link.Field.SetValue(node, Deltas.DetectDelta(typedValue, Mathf.Clamp(EditorGUILayout.DelayedFloatField(link.Name, typedValue), min, max), ref preview.Stale));
+						else link.Field.SetValue(node, Deltas.DetectDelta(typedValue, EditorGUILayout.DelayedFloatField(link.Name, typedValue), ref preview.Stale));
 					}
 				}
 				else if (link.Type == typeof(int))
@@ -251,8 +251,8 @@ namespace LunraGamesEditor.NoiseMaker
 					else
 					{
 						typedValue = (int)linkValue;
-						if (link.Min != null || link.Max != null) link.Field.SetValue(node, Deltas.DetectDelta<int>(typedValue, EditorGUILayout.IntSlider(link.Name, typedValue, min, max), ref preview.Stale));
-						else link.Field.SetValue(node, Deltas.DetectDelta<int>(typedValue, EditorGUILayout.DelayedIntField(link.Name, typedValue), ref preview.Stale));
+						if (link.Min != null || link.Max != null) link.Field.SetValue(node, Deltas.DetectDelta(typedValue, EditorGUILayout.IntSlider(link.Name, typedValue, min, max), ref preview.Stale));
+						else link.Field.SetValue(node, Deltas.DetectDelta(typedValue, EditorGUILayout.DelayedIntField(link.Name, typedValue), ref preview.Stale));
 					}
 				}
 				else if (link.Type == typeof(bool))
@@ -261,7 +261,7 @@ namespace LunraGamesEditor.NoiseMaker
 					else 
 					{
 						var typedValue = (bool)linkValue;
-						link.Field.SetValue(node, Deltas.DetectDelta<bool>(typedValue, EditorGUILayout.Toggle(link.Name, typedValue), ref preview.Stale));
+						link.Field.SetValue(node, Deltas.DetectDelta(typedValue, EditorGUILayout.Toggle(link.Name, typedValue), ref preview.Stale));
 					}
 				}
 				else if (typeof(Enum).IsAssignableFrom(link.Type))
@@ -270,7 +270,7 @@ namespace LunraGamesEditor.NoiseMaker
 					else 
 					{
 						var typedValue = (Enum)linkValue;
-						link.Field.SetValue(node, Deltas.DetectDelta<Enum>(typedValue, EditorGUILayout.EnumPopup(link.Name, typedValue), ref preview.Stale));
+						link.Field.SetValue(node, Deltas.DetectDelta(typedValue, EditorGUILayout.EnumPopup(link.Name, typedValue), ref preview.Stale));
 					}
 				}
 				else if (link.Type == typeof(Vector3))
@@ -279,7 +279,16 @@ namespace LunraGamesEditor.NoiseMaker
 					else 
 					{
 						var typedValue = (Vector3) linkValue;
-						link.Field.SetValue(node, Deltas.DetectDelta<Vector3>(typedValue, EditorGUILayout.Vector3Field(link.Name, typedValue), ref preview.Stale));
+						link.Field.SetValue(node, Deltas.DetectDelta(typedValue, EditorGUILayout.Vector3Field(link.Name, typedValue), ref preview.Stale));
+					}
+				}
+				else if (link.Type == typeof(Color))
+				{
+					if (usedNodeValue != null) EditorGUILayout.ColorField(link.Name, (Color)usedNodeValue);
+					else
+					{
+						var typedValue = (Color)linkValue;
+						link.Field.SetValue(node, Deltas.DetectDelta(typedValue, EditorGUILayout.ColorField(link.Name, typedValue), ref preview.Stale));
 					}
 				}
 				else if (link.Type == typeof(AnimationCurve))
@@ -301,9 +310,25 @@ namespace LunraGamesEditor.NoiseMaker
 						link.Field.SetValue(node, typedValue);
 					}
 				}
+				else if (link.Type == typeof(Texture2D))
+				{
+					if (usedNodeValue != null) EditorGUILayout.ObjectField(link.Name, (Texture2D)usedNodeValue, typeof(Texture2D), false);
+					else
+					{
+						// weird check here because unity lies about serialized fields being null.
+						var typedValue = linkValue == null || linkValue.Equals(null) ? null : (Texture2D)linkValue;
+						var result = EditorGUILayout.ObjectField(link.Name, typedValue, typeof(Texture2D), false);
+						link.Field.SetValue(node, Deltas.DetectDelta(typedValue, result == null ? null : result as Texture2D, ref preview.Stale));
+					}
+				}
 				else
 				{
-					EditorGUILayout.HelpBox("Field of unrecognized type: "+link.Type.Name, MessageType.Error);
+					GUILayout.BeginHorizontal();
+					{
+						EditorGUILayout.HelpBox("Field of unrecognized type: "+link.Type.Name, MessageType.Error);
+						if (GUILayout.Button("Context", EditorStyles.miniButton, GUILayout.Height(40f))) DebugExtensions.OpenFileAtContext();
+					}
+					GUILayout.EndHorizontal();
 				}
 
 				GUI.color = wasColor;

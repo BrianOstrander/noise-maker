@@ -5,12 +5,12 @@ using UnityEngine;
 
 namespace LunraGamesEditor.NoiseMaker
 {
-	[NodeDrawer(typeof(TextureNode), Strings.Properties, "Texture")]
-	public class TextureNodeEditor : NodeEditor
+	[NodeDrawer(typeof(Texture2DNode), Strings.Properties, "Texture2D")]
+	public class Texture2DNodeEditor : NodeEditor
 	{
 		public override INode Draw(Noise noise, INode node)
 		{
-			var textureNode = node as TextureNode;
+			var textureNode = node as Texture2DNode;
 
 			var preview = GetPreview(noise, node);
 

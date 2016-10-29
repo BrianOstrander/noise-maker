@@ -114,7 +114,7 @@ namespace LunraGames.NoiseMaker
 					var lat = SphereUtils.GetLatitude(y, height);
 					var lon = SphereUtils.GetLongitude(x, width);
 					var value = getValue(lat, lon);
-					colors[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = GetSphereColor(lat, lon, value);
+					colors[Texture2DExtensions.PixelCoordinateToIndex(x, y, width, height)] = GetSphereColor(lat, lon, value);
 				}
 			}
 		}

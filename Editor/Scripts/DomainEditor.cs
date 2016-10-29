@@ -64,7 +64,7 @@ namespace LunraGamesEditor.NoiseMaker
 								var normalValue = Previewer.Calculate(value, Previewer);
 								var highlightedValue = Color.green.NewV(normalValue);
 
-								pixels[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = Mathf.Approximately(0f, weight) ? normalValue : highlightedValue;
+								pixels[Texture2DExtensions.PixelCoordinateToIndex(x, y, width, height)] = Mathf.Approximately(0f, weight) ? normalValue : highlightedValue;
 							}
 						}
 					},

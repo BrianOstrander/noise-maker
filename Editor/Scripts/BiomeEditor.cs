@@ -5,6 +5,7 @@ using UnityEngine;
 using LibNoise;
 using LibNoise.Models;
 using LunraGames.NoiseMaker;
+using LunraGames;
 
 namespace LunraGamesEditor.NoiseMaker
 {
@@ -74,7 +75,7 @@ namespace LunraGamesEditor.NoiseMaker
 
 								var hiddenColor = Previewer.Calculate(value, Previewer);
 
-								pixels[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = Mathf.Approximately(0f, weight) ? hiddenColor : color;
+								pixels[Texture2DExtensions.PixelCoordinateToIndex(x, y, width, height)] = Mathf.Approximately(0f, weight) ? hiddenColor : color;
 							}
 						}
 					},

@@ -26,12 +26,12 @@ namespace LunraGames.NoiseMaker
 
 			var billow = Value == null ? new Billow() : Value as Billow;
 
-			billow.Frequency = GetLocalIfValueNull<float>(Frequency, 0, values);
-			billow.Lacunarity = GetLocalIfValueNull<float>(Lacunarity, 1, values);
-			billow.NoiseQuality = GetLocalIfValueNull<NoiseQuality>(Quality, 2, values);
-			billow.OctaveCount = Mathf.Clamp(GetLocalIfValueNull<int>(OctaveCount, 3, values), 1, 29);
-			billow.Persistence = GetLocalIfValueNull<float>(Persistence, 4, values);
-			billow.Seed = GetLocalIfValueNull<int>(Seed, 5, values);
+			billow.Frequency = GetLocalIfValueNull(Frequency, 0, values);
+			billow.Lacunarity = GetLocalIfValueNull(Lacunarity, 1, values);
+			billow.NoiseQuality = GetLocalIfValueNull(Quality, 2, values);
+			billow.OctaveCount = Mathf.Clamp(GetLocalIfValueNull(OctaveCount, 3, values), 1, 29);
+			billow.Persistence = GetLocalIfValueNull(Persistence, 4, values);
+			billow.Seed = GetLocalIfValueNull(Seed, 5, values);
 
 			Value = billow;
 			return Value;
