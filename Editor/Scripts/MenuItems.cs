@@ -27,7 +27,7 @@ namespace LunraGamesEditor.NoiseMaker
 
 			}
 
-			AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<NoiseDraftAsset>(), Path.Combine(path, "NoiseDraft.asset"));
+			AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<EchoAsset>(), Path.Combine(path, "NoiseDraft.asset"));
 			AssetDatabase.SaveAssets();
 		}
 	}

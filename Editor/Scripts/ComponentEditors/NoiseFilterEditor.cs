@@ -10,7 +10,7 @@ namespace LunraGames.NoiseMaker
 		SerializedProperty GenerateOnAwake;
 		SerializedProperty OverrideSeed;
 		SerializedProperty Seed;
-		SerializedProperty NoiseGraph;
+		SerializedProperty Echo;
 		SerializedProperty MercatorMap;
 		SerializedProperty MapWidth;
 		SerializedProperty MapHeight;
@@ -26,7 +26,7 @@ namespace LunraGames.NoiseMaker
 			GenerateOnAwake = serializedObject.FindProperty("GenerateOnAwake");
 			OverrideSeed = serializedObject.FindProperty("OverrideSeed");
 			Seed = serializedObject.FindProperty("Seed");
-			NoiseGraph = serializedObject.FindProperty("NoiseGraph");
+			Echo = serializedObject.FindProperty("Echo");
 			MercatorMap = serializedObject.FindProperty("MercatorMap");
 			MapWidth = serializedObject.FindProperty("MapWidth");
 			MapHeight = serializedObject.FindProperty("MapHeight");
@@ -50,7 +50,7 @@ namespace LunraGames.NoiseMaker
 			//if (changed && filtering == NoiseMaker.Filtering.Sphere && MapWidth.intValue != (MapHeight.intValue * 2)) MapWidth.intValue = MapHeight.intValue * 2;
 			//changed = false;
 
-			GUI.enabled = Application.isPlaying && NoiseGraph.objectReferenceValue != null && MercatorMap.objectReferenceValue != null;
+			GUI.enabled = Application.isPlaying && Echo.objectReferenceValue != null && MercatorMap.objectReferenceValue != null;
 			if (GUILayout.Button("Regenerate")) (target as NoiseFilter).Regenerate();
 			GUI.enabled = true;
 
@@ -60,9 +60,9 @@ namespace LunraGames.NoiseMaker
 
 			if (OverrideSeed.boolValue) EditorGUILayout.PropertyField(Seed);
 
-			if (GenerateOnAwake.boolValue && NoiseGraph.objectReferenceValue == null) EditorGUILayout.HelpBox("A Noise Graph must be specified before the gameobject is enabled for the first time, or an error will occur.", MessageType.Warning);
+			if (GenerateOnAwake.boolValue && Echo.objectReferenceValue == null) EditorGUILayout.HelpBox("A Noise Graph must be specified before the gameobject is enabled for the first time, or an error will occur.", MessageType.Warning);
 
-			EditorGUILayout.PropertyField(NoiseGraph);
+			EditorGUILayout.PropertyField(Echo);
 
 			Datum.floatValue = Deltas.DetectDelta(Datum.floatValue, EditorGUILayout.DelayedFloatField(new GUIContent("Datum", "Datum is similar to a \"sea level\" that all values are relative to."), Datum.floatValue), ref changed);
 			if (changed && Datum.floatValue <= 0f)

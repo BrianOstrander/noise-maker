@@ -12,11 +12,11 @@ namespace LunraGamesEditor.NoiseMaker
 		[SerializeField]
 		Texture2D NoiseIconPeasant;
 
-		public Texture2D NoiseDraftIcon { get { return EditorGUIUtility.isProSkin ? NoiseDraftIconPro : NoiseDraftIconPeasant; } }
+		public Texture2D EchoIcon { get { return EditorGUIUtility.isProSkin ? EchoIconPro : EchoIconPeasant; } }
 		[SerializeField]
-		Texture2D NoiseDraftIconPro;
+		Texture2D EchoIconPro;
 		[SerializeField]
-		Texture2D NoiseDraftIconPeasant;
+		Texture2D EchoIconPeasant;
 
 		public Texture2D[] LoadingPinwheels;
 

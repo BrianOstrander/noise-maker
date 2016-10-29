@@ -5,13 +5,57 @@ using Newtonsoft.Json;
 using System.Linq;
 using UnityEngine;
 using LibNoise.Models;
+using LibNoise.Modifiers;
+using LunraGames.NumberDemon;
 
 namespace LunraGames.NoiseMaker
 {
 	public class Noise
 	{
-		const float DefaultDatum = 0.5f;
-		const float DefaultDeviation = 0.1f;
+		public const float DefaultDatum = 0.5f;
+		public const float DefaultDeviation = 0.1f;
+
+		[JsonProperty]
+		Vector3 _Translation = Vector3.zero;
+
+		public Vector3 Translation 
+		{
+			get { return _Translation; }
+			set
+			{
+				if (_Translation == value) return;
+				CleanCache();
+				_Translation = value;
+			}
+		}
+
+		[JsonProperty]
+		Vector3 _Rotation = Vector3.zero;
+
+		public Vector3 Rotation
+		{
+			get { return _Rotation; }
+			set
+			{
+				if (_Rotation == value) return;
+				CleanCache();
+				_Rotation = value;
+			}
+		}
+
+		[JsonProperty]
+		Vector3 _Scale = Vector3.one;
+
+		public Vector3 Scale
+		{
+			get { return _Scale; }
+			set
+			{
+				if (_Scale == value) return;
+				CleanCache();
+				_Scale = value;
+			}
+		}
 
 		[JsonProperty]
 		List<INode> Nodes = new List<INode>();
@@ -27,7 +71,21 @@ namespace LunraGames.NoiseMaker
 		public IPropertyNode[] PropertyNodes { get { return CachedProperties ?? (CachedProperties = AllNodes.OfType<IPropertyNode>().Where(p => p.IsEditable).ToArray()); } }
 
 		public string RootId;
-		public int Seed;
+
+		int? _RandomSeed;
+		int _Seed;
+
+		public int SpecifiedSeed { get { return _Seed; } }
+
+		public int Seed
+		{
+			get { return SpecifiedSeed == 0 ? (_RandomSeed.HasValue ? _RandomSeed.Value : (_RandomSeed = DemonUtility.NextInteger).Value) : SpecifiedSeed; }
+			set
+			{
+				_Seed = value;
+				_RandomSeed = null;
+			}
+		}
 
 		IModule _Root;
 
@@ -42,6 +100,9 @@ namespace LunraGames.NoiseMaker
 					var node = AllNodes.FirstOrDefault(n => n.Id == RootId);
 					if (node == null) throw new NullReferenceException("No node found for the RootId \""+RootId+"\"");
 					_Root = node.GetRawValue(this) as IModule;
+					if (Translation != Vector3.zero) _Root = new TranslateInput(_Root, Translation.x, Translation.y, Translation.z);
+					if (Rotation != Vector3.zero) _Root = new RotateInput(_Root, Rotation.x, Rotation.y, Rotation.z);
+					if (Scale != Vector3.one) _Root = new ScaleInput(_Root, Scale.x, Scale.y, Scale.z);
 				}
 				return _Root;
 			}
@@ -133,7 +194,7 @@ namespace LunraGames.NoiseMaker
 				// Get the value of the specified vert, by converting it's euler position to a latitude and longitude.
 				var vert = vertices[i];
 				var latLong = SphereUtils.CartesianToGeographic(vert.normalized);
-				vertices[i] = (vert.normalized * datum) + (vert.normalized * (float)sphere.GetValue(latLong.x, latLong.y) * (datum * deviation));
+				vertices[i] = (vert.normalized * datum) + (vert.normalized * sphere.GetValue(latLong.x, latLong.y) * (datum * deviation));
 			}
 		}
 

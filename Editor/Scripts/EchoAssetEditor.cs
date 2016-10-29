@@ -7,25 +7,25 @@ using LunraGames.NoiseMaker;
 
 namespace LunraGamesEditor.NoiseMaker
 {
-	[CustomEditor(typeof(NoiseDraftAsset), true)]
-	public class NoiseDraftAssetEditor : Editor
+	[CustomEditor(typeof(EchoAsset), true)]
+	public class EchoAssetEditor : Editor
 	{
 		Texture2D Preview;
 
 		public override Texture2D RenderStaticPreview(string assetPath, Object[] subAssets, int width, int height)
 		{
-			return Preview ?? (Preview = Instantiate(NoiseMakerConfig.Instance.NoiseDraftIcon));
+			return Preview ?? (Preview = Instantiate(NoiseMakerConfig.Instance.EchoIcon));
 		}
 
 		public override void OnInspectorGUI()
 		{
-			var typedTarget = target as NoiseDraftAsset;
+			var typedTarget = target as EchoAsset;
 			var dirty = false;
 
 			var splashImage = NoiseMakerConfig.Instance.SplashMini;
 			GUI.Box (new Rect (0f, Screen.height - splashImage.height - (splashImage.height * 0.2f), splashImage.width, splashImage.height), splashImage, GUIStyle.none);
 
-			var assetPath = typedTarget.Noise == null ? null : AssetDatabase.GetAssetPath(typedTarget.Noise.GetInstanceID());
+			var assetPath = typedTarget.NoiseAsset == null ? null : AssetDatabase.GetAssetPath(typedTarget.NoiseAsset.GetInstanceID());
 			var activelyEditing = !string.IsNullOrEmpty(assetPath) && assetPath == NoiseMakerWindow.ActiveSavePath;
 			var editingAllowed = !EditorApplication.isCompiling;
 
@@ -37,9 +37,9 @@ namespace LunraGamesEditor.NoiseMaker
 
 			GUI.enabled = editingAllowed;
 
-			typedTarget.Noise =	Deltas.DetectDelta(typedTarget.Noise, EditorGUILayout.ObjectField("Noise", typedTarget.Noise, typeof(NoiseAsset), false) as NoiseAsset, ref dirty);
+			typedTarget.NoiseAsset =	Deltas.DetectDelta(typedTarget.NoiseAsset, EditorGUILayout.ObjectField("Noise", typedTarget.NoiseAsset, typeof(NoiseAsset), false) as NoiseAsset, ref dirty);
 
-			try { dirty = DrawProperties(typedTarget, typedTarget.Assets) || dirty; }
+			try { dirty = DrawProperties(typedTarget, typedTarget.Properties) || dirty; }
 			catch (ExitGUIException) {}
 			catch (Exception e)
 			{
@@ -50,7 +50,7 @@ namespace LunraGamesEditor.NoiseMaker
 			if (dirty) EditorUtility.SetDirty(typedTarget);
 		}
 
-		bool DrawProperties(NoiseDraftAsset asset, params Property[] properties)
+		bool DrawProperties(EchoAsset asset, params Property[] properties)
 		{
 			if (properties == null) return false;
 
