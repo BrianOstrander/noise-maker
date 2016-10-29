@@ -15,8 +15,8 @@ namespace LunraGamesEditor.NoiseMaker
 			Helper.LaunchFeedback(LunraGamesEditor.Strings.Company, Strings.Plugin);
 		}
 
-		[MenuItem("Assets/Create/Noise Draft")]
-		static void CreateNoiseDraftAsset()
+		[MenuItem("Assets/Create/Noise Maker Echo")]
+		static void CreateEchoAsset()
 		{
 			var path = "Assets";
 			var selection = Selection.GetFiltered(typeof(Object), SelectionMode.Assets).FirstOrDefault();
@@ -27,7 +27,7 @@ namespace LunraGamesEditor.NoiseMaker
 
 			}
 
-			AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<EchoAsset>(), Path.Combine(path, "NoiseDraft.asset"));
+			AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<EchoAsset>(), Path.Combine(path, "Echo.asset"));
 			AssetDatabase.SaveAssets();
 		}
 	}

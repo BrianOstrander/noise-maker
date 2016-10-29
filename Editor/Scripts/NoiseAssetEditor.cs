@@ -33,7 +33,7 @@ namespace LunraGamesEditor.NoiseMaker
 
 			GUI.enabled = true;
 
-			EditorGUILayout.HelpBox("This is a raw noise asset, create a Noise Draft that references this to create instances of it.", MessageType.Info);
+			EditorGUILayout.HelpBox("This is a raw noise asset, create an Echo that references this to create instances of it.", MessageType.Info);
 
 			if (UpdatedAt < typedTarget.UpdatedAt)
 			{
