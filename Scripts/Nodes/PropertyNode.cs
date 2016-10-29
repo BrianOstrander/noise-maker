@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
@@ -20,7 +20,7 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
-		public override T GetValue (Noise graph)
+		public override T GetValue (Noise noise)
 		{
 			Value = PropertyValue;
 			return Value;

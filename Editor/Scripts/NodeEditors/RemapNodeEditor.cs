@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using LunraGames.NoiseMaker;
@@ -10,13 +10,13 @@ namespace LunraGamesEditor.NoiseMaker
 	{
 		static Dictionary<string, Vector2> ScrollPositions = new Dictionary<string, Vector2>();
 
-		public override INode Draw(Noise graph, INode node)
+		public override INode Draw(Noise noise, INode node)
 		{
 			var remap = node as RemapNode;
 
-			if (remap.GetValue(graph) != null)
+			if (remap.GetValue(noise) != null)
 			{
-				var preview = GetPreview(graph, node);
+				var preview = GetPreview(noise, node);
 				GUILayout.Box(preview.Preview);
 
 				GUILayout.FlexibleSpace();

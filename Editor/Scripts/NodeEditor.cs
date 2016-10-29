@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -75,7 +75,7 @@ namespace LunraGamesEditor.NoiseMaker
 
 		protected static List<NodePreview> Previews = new List<NodePreview>();
 
-		protected NodePreview GetPreview(Noise graph, INode node)
+		protected NodePreview GetPreview(Noise noise, INode node)
 		{
 			var preview = Previews.FirstOrDefault(p => p.Id == node.Id);
 
@@ -103,7 +103,7 @@ namespace LunraGamesEditor.NoiseMaker
 			{
 				if (node.OutputType == typeof(IModule))
 				{
-					var module = node.GetRawValue(graph) as IModule;
+					var module = node.GetRawValue(noise) as IModule;
 					if (module == null) preview.Warning = NodeEditorCacher.Editors[node.GetType()].Details.Warning;
 					else
 					{
@@ -178,11 +178,11 @@ namespace LunraGamesEditor.NoiseMaker
 			return currRect;
 		}
 
-		public INode DrawFields(Noise graph, INode node, bool showPreview = true)
+		public INode DrawFields(Noise noise, INode node, bool showPreview = true)
 		{
 			var wasEnabled = GUI.enabled;
 
-			var preview = GetPreview(graph, node);
+			var preview = GetPreview(noise, node);
 
 			if (showPreview) 
 			{
@@ -202,8 +202,8 @@ namespace LunraGamesEditor.NoiseMaker
 
 				if (usingLinkedNode)
 				{
-					var originNode = graph.AllNodes.FirstOrDefault(n => n.Id == node.SourceIds[link.Index]);
-					if (originNode != null) usedNodeValue = originNode.GetRawValue(graph);
+					var originNode = noise.AllNodes.FirstOrDefault(n => n.Id == node.SourceIds[link.Index]);
+					if (originNode != null) usedNodeValue = originNode.GetRawValue(noise);
 				}
 
 				GUI.enabled = !usingLinkedNode && wasEnabled;
@@ -331,9 +331,9 @@ namespace LunraGamesEditor.NoiseMaker
 			return preview == null ? long.MinValue : preview.LastUpdated;
 		}
 
-		public virtual INode Draw(Noise graph, INode node)
+		public virtual INode Draw(Noise noise, INode node)
 		{
-			return DrawFields(graph, node);
+			return DrawFields(noise, node);
 		}
 	}
 }

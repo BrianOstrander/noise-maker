@@ -1,4 +1,4 @@
-﻿using LunraGames.NumberDemon;
+using LunraGames.NumberDemon;
 
 namespace LunraGames.NoiseMaker
 {
@@ -7,11 +7,11 @@ namespace LunraGames.NoiseMaker
 		int? Seed;
 		int LastRootSeed;
 
-		public override int GetValue (Noise graph)
+		public override int GetValue (Noise noise)
 		{
-			if (!Seed.HasValue || LastRootSeed != graph.Seed) 
+			if (!Seed.HasValue || LastRootSeed != noise.Seed) 
 			{
-				LastRootSeed = graph.Seed;
+				LastRootSeed = noise.Seed;
  				Seed = DemonUtility.CantorPair(Id.GetHashCode(), LastRootSeed);
 			}
 

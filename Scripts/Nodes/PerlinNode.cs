@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using LibNoise;
 using LunraGames.NumberDemon;
 
@@ -19,9 +19,9 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(5)]
 		public int Seed = DemonUtility.NextInteger;
 
-		public override IModule GetValue (Noise graph)
+		public override IModule GetValue (Noise noise)
 		{
-			var values = NullableValues(graph);
+			var values = NullableValues(noise);
 
 			var perlin = Value == null ? new Perlin() : Value as Perlin;
 

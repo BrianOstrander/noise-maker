@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using LibNoise;
 using Newtonsoft.Json;
 using LunraGames.NumberDemon;
@@ -18,9 +18,9 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(4)]
 		public int Seed = DemonUtility.NextInteger;
 
-		public override IModule GetValue (Noise graph)
+		public override IModule GetValue (Noise noise)
 		{
-			var values = NullableValues(graph);
+			var values = NullableValues(noise);
 			var source = GetLocalIfValueNull(Source, 0, values);
 
 			if (source == null) return null;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace LunraGames.NoiseMaker
 {
@@ -7,9 +7,9 @@ namespace LunraGames.NoiseMaker
 		public string NoiseJson;
 
 		/// <summary>
-		/// Retrieves a new copy of the serialized graph.
+		/// Retrieves a new copy of the serialized noise.
 		/// </summary>
-		/// <value>The graph.</value>
+		/// <value>The noise.</value>
 		public Noise Noise 
 		{
 			get 

@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -184,7 +184,7 @@ namespace LunraGamesEditor.NoiseMaker
 					GUILayout.Label("Welcome to Noise Maker!");
 					GUILayout.BeginHorizontal();
 					{
-						// Create new Noise Maker graph file.
+						// Create new Noise Maker noise file.
 						if (GUILayout.Button("New")) 
 						{
 							var savePath = UnityEditor.EditorUtility.SaveFilePanelInProject("New Noise Graph", "Noise", "asset", null);
@@ -204,7 +204,7 @@ namespace LunraGamesEditor.NoiseMaker
 								Save();
 							}
 						}
-						// Open existing Noise Maker graph file
+						// Open existing Noise Maker noise file
 						if (GUILayout.Button("Open"))
 						{
 							var openPath = UnityEditor.EditorUtility.OpenFilePanel("Open Noise Graph", Application.dataPath, "asset");
@@ -221,11 +221,11 @@ namespace LunraGamesEditor.NoiseMaker
 		}
 
 		/// <summary>
-		/// Draws the graph containing all the nodes and connections for the file currently being edited.
+		/// Draws the noise containing all the nodes and connections for the file currently being edited.
 		/// </summary>
 		void DrawGraph ()
 		{
-			// Cache connecting from so we know if the user just clicked on a node, or deselected it by clicking the background of the graph.
+			// Cache connecting from so we know if the user just clicked on a node, or deselected it by clicking the background of the noise.
 			var connectingFromWas = ConnectingFrom;
 			// Use this to determine the start point of the connection when the user's mouse is moving around with it.
 			var fromRect = new Rect();
@@ -379,7 +379,7 @@ namespace LunraGamesEditor.NoiseMaker
 				if (deletedNode != null) Graph.Remove(deletedNode);
 			}
 	        EndWindows();
-	        // If the user clicks the background of the graph area, it cancels the process of connecting nodes.
+	        // If the user clicks the background of the noise area, it cancels the process of connecting nodes.
 			if (connectingFromWas != null && Event.current.rawType == EventType.mouseUp && ConnectingTo == null) ResetConnections();
 			// Draw the node that's following the cursor around if the user is currently connecting nodes.
 			if (ConnectingFrom != null)
@@ -925,7 +925,7 @@ namespace LunraGamesEditor.NoiseMaker
     	}  
 
     	/// <summary>
-    	/// Gets the current center of the graph, from the users perspective.
+    	/// Gets the current center of the noise, from the users perspective.
     	/// </summary>
     	/// <returns>The center.</returns>
     	Vector2 GraphCenter()
@@ -984,7 +984,7 @@ namespace LunraGamesEditor.NoiseMaker
 
 				Repaint();
 			}
-			else EditorUtility.DisplayDialog("Invalid", "Selected noise graph must be inside project directory.", "Okay");	
+			else EditorUtility.DisplayDialog("Invalid", "Selected noise noise must be inside project directory.", "Okay");	
 		}
 	}
 }

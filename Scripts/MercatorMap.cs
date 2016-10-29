@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using System.Collections;
 
@@ -11,7 +11,7 @@ namespace LunraGames.NoiseMaker
 		/// <summary>
 		/// Retrieves a new copy of the serialized mercator.
 		/// </summary>
-		/// <value>The graph.</value>
+		/// <value>The noise.</value>
 		public Mercator MercatorInstantiation 
 		{
 			get 

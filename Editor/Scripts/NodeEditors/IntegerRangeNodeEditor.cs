@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using LunraGames.NoiseMaker;
 
@@ -7,14 +7,14 @@ namespace LunraGamesEditor.NoiseMaker
 	[NodeDrawer(typeof(IntegerRangeNode), Strings.Utility, "Integer Range")]
 	public class IntegerRangeNodeEditor : NodeEditor 
 	{
-		public override INode Draw(Noise graph, INode node)
+		public override INode Draw(Noise noise, INode node)
 		{
 			var rangeNode = node as IntegerRangeNode;
 
 			if (rangeNode.UpperBound < rangeNode.LowerBound) EditorGUILayout.HelpBox("Upper bound cannot be less than lower bound.", MessageType.Warning);
 
-			rangeNode = DrawFields(graph, rangeNode, false) as IntegerRangeNode;
-			var currValue = rangeNode.GetValue(graph);
+			rangeNode = DrawFields(noise, rangeNode, false) as IntegerRangeNode;
+			var currValue = rangeNode.GetValue(noise);
 
 			GUILayout.BeginHorizontal();
 			{

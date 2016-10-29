@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using LibNoise;
 using Newtonsoft.Json;
@@ -162,7 +162,7 @@ namespace LunraGames.NoiseMaker
 		}
 
 		/// <summary>
-		/// Populates an array with values derived from a spherical model of this graph.
+		/// Populates an array with values derived from a spherical model of this noise.
 		/// </summary>
 		/// <param name="vertices">Vertices array to update.</param>
 		/// <param name="datum">Datum is similar to a "sea level" that all values are relative to.</param>

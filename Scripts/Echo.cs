@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using LibNoise;
 using LibNoise.Models;
 using Plane = LibNoise.Models.Plane;
@@ -116,17 +116,17 @@ namespace LunraGames.NoiseMaker
 		Sphere _Sphere;
 		public Sphere Sphere { get { return _Sphere ?? (_Sphere = new Sphere(Noise.Root)); } }
 
-		public Echo(Noise graph, params Property[] properties) : this(graph, 0, properties) {}
-		public Echo(Noise graph, int seed, params Property[] properties) : this(graph, seed, Vector3.zero, Vector3.zero, Vector3.one, properties) {}
-		public Echo(Noise graph, Vector3 translation, Vector3 rotation, Vector3 scale, params Property[] properties) : this(graph, 0, translation, rotation, scale, properties) {}
-		public Echo(Noise graph, int seed, Vector3 translation, Vector3 rotation, Vector3 scale, params Property[] properties)
+		public Echo(Noise noise, params Property[] properties) : this(noise, 0, properties) {}
+		public Echo(Noise noise, int seed, params Property[] properties) : this(noise, seed, Vector3.zero, Vector3.zero, Vector3.one, properties) {}
+		public Echo(Noise noise, Vector3 translation, Vector3 rotation, Vector3 scale, params Property[] properties) : this(noise, 0, translation, rotation, scale, properties) {}
+		public Echo(Noise noise, int seed, Vector3 translation, Vector3 rotation, Vector3 scale, params Property[] properties)
 		{
 			Seed = seed;
 			Translation = translation;
 			Rotation = rotation;
 			Scale = scale;
 			Properties = properties;
-			Noise = graph;
+			Noise = noise;
 		}
 
 		public float PlaneValue(Vector2 position)

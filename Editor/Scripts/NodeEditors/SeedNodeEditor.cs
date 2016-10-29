@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
 using LunraGames.NoiseMaker;
@@ -10,11 +10,11 @@ namespace LunraGamesEditor.NoiseMaker
 	{
 		Dictionary<string, int> LastSeeds = new Dictionary<string, int>();
 
-		public override INode Draw(Noise graph, INode node)
+		public override INode Draw(Noise noise, INode node)
 		{
 			var seedNode = node as SeedNode;
-			var currSeed = seedNode.GetValue(graph);
-			var preview = GetPreview(graph, node);
+			var currSeed = seedNode.GetValue(noise);
+			var preview = GetPreview(noise, node);
 
 			int lastSeed;
 			var hadLastSeed = LastSeeds.TryGetValue(node.Id, out lastSeed);

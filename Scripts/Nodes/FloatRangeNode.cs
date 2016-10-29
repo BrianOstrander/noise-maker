@@ -1,4 +1,4 @@
-﻿using LunraGames.NumberDemon;
+using LunraGames.NumberDemon;
 using UnityEngine;
 
 namespace LunraGames.NoiseMaker
@@ -14,9 +14,9 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(3)]
 		public RangeOverrides RangeOverride;
 
-		public override float GetValue (Noise graph)
+		public override float GetValue (Noise noise)
 		{
-			var values = NullableValues(graph);
+			var values = NullableValues(noise);
 
 			var lowerBound = GetLocalIfValueNull(LowerBound, 0, values);
 			var upperBound = GetLocalIfValueNull(UpperBound, 1, values);

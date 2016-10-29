@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using LibNoise;
 using LibNoise.Modifiers;
@@ -11,11 +11,11 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(0)]
 		public float Frequency = 0.02f;
 
-		public override IModule GetValue (Noise graph)
+		public override IModule GetValue (Noise noise)
 		{
 			var cylinders = Value == null ? new Cylinders() : Value as Cylinders;
 
-			cylinders.Frequency = GetLocalIfValueNull<float>(Frequency, 0, graph);
+			cylinders.Frequency = GetLocalIfValueNull<float>(Frequency, 0, noise);
 
 			Value = cylinders;
 			return Value;

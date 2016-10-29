@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 using LunraGames.NoiseMaker;
 
@@ -7,11 +7,11 @@ namespace LunraGamesEditor.NoiseMaker
 	[NodeDrawer(typeof(CurveRangeNode), Strings.Utility, "Curve Range")]
 	public class CurveRangeNodeEditor : NodeEditor 
 	{
-		public override INode Draw(Noise graph, INode node)
+		public override INode Draw(Noise noise, INode node)
 		{
-			var curveRange = DrawFields(graph, node, false) as CurveRangeNode;
+			var curveRange = DrawFields(noise, node, false) as CurveRangeNode;
 
-			var currValue = curveRange.GetValue(graph);
+			var currValue = curveRange.GetValue(noise);
 
 			GUILayout.BeginHorizontal();
 			{

@@ -16,9 +16,9 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(3, 1, int.MaxValue)]
 		public int OverrideSamples = 1;
 
-		public override float GetValue(Noise graph)
+		public override float GetValue(Noise noise)
 		{
-			var values = NullableValues(graph);
+			var values = NullableValues(noise);
 
 			var curve = GetLocalIfValueNull(Curve, 0, values);
 			var seed = GetLocalIfValueNull(Seed, 1, values);

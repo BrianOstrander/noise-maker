@@ -47,8 +47,6 @@ namespace LunraGames.NoiseMaker
 			// todo: implement filtering
 			//Filtering.enumValueIndex = Deltas.DetectDelta(Filtering.enumValueIndex, GUILayout.Toolbar(Filtering.enumValueIndex, Enum.GetNames(typeof(NoiseMaker.Filtering))), ref changed);
 			var filtering = (Filtering)Filtering.enumValueIndex;
-			//if (changed && filtering == NoiseMaker.Filtering.Sphere && MapWidth.intValue != (MapHeight.intValue * 2)) MapWidth.intValue = MapHeight.intValue * 2;
-			//changed = false;
 
 			GUI.enabled = Application.isPlaying && Echo.objectReferenceValue != null && MercatorMap.objectReferenceValue != null;
 			if (GUILayout.Button("Regenerate")) (target as NoiseFilter).Regenerate();
@@ -60,7 +58,7 @@ namespace LunraGames.NoiseMaker
 
 			if (OverrideSeed.boolValue) EditorGUILayout.PropertyField(Seed);
 
-			if (GenerateOnAwake.boolValue && Echo.objectReferenceValue == null) EditorGUILayout.HelpBox("A Noise Graph must be specified before the gameobject is enabled for the first time, or an error will occur.", MessageType.Warning);
+			if (GenerateOnAwake.boolValue && Echo.objectReferenceValue == null) EditorGUILayout.HelpBox("An Echo asset must be specified before the gameobject is enabled for the first time, or an error will occur.", MessageType.Warning);
 
 			EditorGUILayout.PropertyField(Echo);
 
@@ -68,7 +66,7 @@ namespace LunraGames.NoiseMaker
 			if (changed && Datum.floatValue <= 0f)
 			{
 				Datum.floatValue = NoiseFilter.DefaultDatum;
-				UnityEditor.EditorUtility.DisplayDialog("Invalid", "Datum must remain greater than zero.", "Okay");
+				EditorUtility.DisplayDialog("Invalid", "Datum must remain greater than zero.", "Okay");
 			}
 			changed = false;
 
@@ -76,7 +74,7 @@ namespace LunraGames.NoiseMaker
 			if (changed && Deviation.floatValue < 0f)
 			{
 				Deviation.floatValue = NoiseFilter.DefaultDeviation;
-				UnityEditor.EditorUtility.DisplayDialog("Invalid", "Deviation can't be negative.", "Okay");
+				EditorUtility.DisplayDialog("Invalid", "Deviation can't be negative.", "Okay");
 			}
 			changed = false;
 
@@ -88,25 +86,25 @@ namespace LunraGames.NoiseMaker
 
 			EditorGUILayout.PropertyField(MercatorMap);
 
-			MapWidth.intValue = Deltas.DetectDelta<int>(MapWidth.intValue, EditorGUILayout.DelayedIntField(new GUIContent("Texture Width", "The height in pixels of the texture to apply the specified Mercator to."), MapWidth.intValue), ref changed);
+			MapWidth.intValue = Deltas.DetectDelta(MapWidth.intValue, EditorGUILayout.DelayedIntField(new GUIContent("Texture Width", "The height in pixels of the texture to apply the specified Mercator to."), MapWidth.intValue), ref changed);
 			if (changed)
 			{
 				if (MapWidth.intValue < 1)
 				{
 					MapWidth.intValue = 1;
-					UnityEditor.EditorUtility.DisplayDialog("Invalid", "Width must remain greater than 1.", "Okay");
+					EditorUtility.DisplayDialog("Invalid", "Width must remain greater than 1.", "Okay");
 				}
 				if (filtering == NoiseMaker.Filtering.Sphere) MapHeight.intValue = Mathf.CeilToInt((float)MapWidth.intValue * 0.5f);
 			}
 			changed = false;
 
-			MapHeight.intValue = Deltas.DetectDelta<int>(MapHeight.intValue, EditorGUILayout.DelayedIntField(new GUIContent("Texture Height", "The height in pixels of the texture to apply the specified Mercator to."), MapHeight.intValue), ref changed);
+			MapHeight.intValue = Deltas.DetectDelta(MapHeight.intValue, EditorGUILayout.DelayedIntField(new GUIContent("Texture Height", "The height in pixels of the texture to apply the specified Mercator to."), MapHeight.intValue), ref changed);
 			if (changed)
 			{
 				if (MapHeight.intValue < 1)
 				{
 					MapHeight.intValue = 1;
-					UnityEditor.EditorUtility.DisplayDialog("Invalid", "Height must remain greater than 1.", "Okay");
+					EditorUtility.DisplayDialog("Invalid", "Height must remain greater than 1.", "Okay");
 				}
 				if (filtering == NoiseMaker.Filtering.Sphere) MapWidth.intValue = Mathf.CeilToInt(MapHeight.intValue * 2);
 			}

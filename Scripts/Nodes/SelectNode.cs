@@ -1,4 +1,4 @@
-﻿using LibNoise;
+using LibNoise;
 using LibNoise.Modifiers;
 using System.Collections.Generic;
 using Newtonsoft.Json;
@@ -29,9 +29,9 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(5)]
 		public float UpperBound = 1f;
 
-		public override IModule GetValue (Noise graph)
+		public override IModule GetValue (Noise noise)
 		{
-			var values = NullableValues(graph);
+			var values = NullableValues(noise);
 
 			var control = GetLocalIfValueNull<IModule>(Control, 0, values);
 			var source0 = GetLocalIfValueNull<IModule>(Source0, 1, values);
