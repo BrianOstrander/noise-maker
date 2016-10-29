@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using LibNoise;
 using LibNoise.Modifiers;
@@ -13,9 +13,9 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(1)]
 		public Vector3 Scale = Vector3.one;
 
-		public override IModule GetValue (Graph graph)
+		public override IModule GetValue (Noise noise)
 		{
-			var values = NullableValues(graph);
+			var values = NullableValues(noise);
 			var source = GetLocalIfValueNull<IModule>(Source, 0, values);
 
 			if (source == null) return null;

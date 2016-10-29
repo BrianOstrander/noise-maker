@@ -2,6 +2,7 @@
 using System;
 using LibNoise.Models;
 using LibNoise.Modifiers;
+using LunraGames.NumberDemon;
 
 namespace LunraGames.NoiseMaker
 {
@@ -15,10 +16,10 @@ namespace LunraGames.NoiseMaker
 		public bool GenerateOnAwake;
 		public bool OverrideSeed;
 		public int Seed;
-		public NoiseGraph NoiseGraph;
+		public EchoAsset Echo;
 		public MercatorMap MercatorMap;
-		public int MapWidth;
-		public int MapHeight;
+		public int MapWidth = 128;
+		public int MapHeight = 128;
 		public Vector3 Translation;
 		public Vector3 Rotation;
 		public Vector3 Scale = Vector3.one;
@@ -36,7 +37,7 @@ namespace LunraGames.NoiseMaker
 
 		public void Regenerate()
 		{
-			if (NoiseGraph == null) throw new NullReferenceException("A NoiseGraph must be specified");
+			if (Echo == null) throw new NullReferenceException("A NoiseGraph must be specified");
 			if (MercatorMap == null) throw new NullReferenceException("A MercatorMap must be specified");
 
 			var meshFilter = GetComponent<MeshFilter>();
@@ -47,30 +48,23 @@ namespace LunraGames.NoiseMaker
 			if (meshFilter.sharedMesh == null) throw new NullReferenceException("A sharedMesh must be specified for this gameobject's MeshFilter");
 			if (meshRenderer.sharedMaterial == null) throw new NullReferenceException("A sharedMaterial must be specified for this gameobject's MeshRenderer");
 
+			if (MapWidth <= 0) throw new ArgumentOutOfRangeException("MapWidth", "MapWidth must be greater than zero");
+			if (MapHeight <= 0) throw new ArgumentOutOfRangeException("MapHeight", "MapHeight must be greater than zero");
+
 			if (CachedMesh == null) CachedMesh = meshFilter.sharedMesh;
 
-			var graph = NoiseGraph.GraphInstantiation;
 			var map = MercatorMap.MercatorInstantiation;
 
-			if (graph == null) throw new NullReferenceException("Couldn't instantiate the NoiseGraph");
 			if (map == null) throw new NullReferenceException("Couldn't instantiate the MercatorMap");
 
-			if (OverrideSeed) graph.Seed = Seed == 0 ? NumberDemon.DemonUtility.NextInteger : Seed;
+			var echo = OverrideSeed ? Echo.GetEcho(Seed, Translation, Rotation, Scale) : Echo.GetEcho(Translation, Rotation, Scale);
 
-			var root = graph.Root;
-
-			if (root == null) throw new NullReferenceException("Couldn't find root IModule");
-
-			if (Translation != Vector3.zero) root = new TranslateInput(root, Translation.x, Translation.y, Translation.z);
-			if (Rotation != Vector3.zero) root = new RotateInput(root, Rotation.x, Rotation.y, Rotation.z);
-			if (Scale != Vector3.one) root = new ScaleInput(root, Scale.x, Scale.y, Scale.z);
-
-			var sphere = new Sphere(root);
+			if (echo == null) throw new NullReferenceException("Couldn't instantiate the Echo");
 
 			var mesh = Instantiate(CachedMesh);
 
 			var verts = mesh.vertices;
-			Graph.GetSphereAltitudes(sphere, ref verts, Datum, Deviation);
+			echo.SphereTransformations(ref verts, Datum, Deviation);
 			mesh.vertices = verts;
 
 			meshFilter.sharedMesh = mesh;
@@ -78,7 +72,7 @@ namespace LunraGames.NoiseMaker
 			var texture = new Texture2D(MapWidth, MapHeight);
 			var colors = new Color[MapWidth * MapHeight];
 
-			map.GetSphereColors(MapWidth, MapHeight, sphere, ref colors);
+			map.GetSphereColors(MapWidth, MapHeight, echo, ref colors);
 			texture.SetPixels(colors);
 			texture.Apply();
 

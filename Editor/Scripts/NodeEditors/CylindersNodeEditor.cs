@@ -1,8 +1,6 @@
-﻿using UnityEngine;
-using UnityEditor;
-using LibNoise;
+﻿using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(CylindersNode), Strings.Generators, "Cylinders")]
 	public class CylindersNodeEditor : NodeEditor {}

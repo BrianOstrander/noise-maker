@@ -1,10 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
-using UnityEditor;
-using LibNoise;
+﻿using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(TranslatePointNode), Strings.Transformers, "Translate Point")]
 	public class TranslatePointNodeEditor : NodeEditor {}

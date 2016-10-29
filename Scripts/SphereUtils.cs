@@ -25,17 +25,22 @@ namespace LunraGames.NoiseMaker
 		}
 
 		// Taken from http://answers.unity3d.com/questions/189724/polar-spherical-coordinates-to-xyz-and-vice-versa.html
-		public static Vector2 CartesianToPolar(Vector3 point)
+		/// <summary>
+		/// Cartesians to geographic latitude and longitude coordinates.
+		/// </summary>
+		/// <returns>The latitude and longitude.</returns>
+		/// <param name="cartesian">Cartesian coordinate in space.</param>
+		public static Vector2 CartesianToGeographic(Vector3 cartesian)
 		{
 			var polar = new Vector2();
 
 			//calc longitude
-			polar.y = Mathf.Atan2(point.x, point.z);
+			polar.y = Mathf.Atan2(cartesian.x, cartesian.z);
 
 			//this is easier to write and read than sqrt(pow(x,2), pow(y,2))!
-			var xzLen = new Vector2(point.x,point.z).magnitude; 
+			var xzLen = new Vector2(cartesian.x,cartesian.z).magnitude; 
 			//atan2 does the magic
-			polar.x = Mathf.Atan2(-point.y, xzLen);
+			polar.x = Mathf.Atan2(-cartesian.y, xzLen);
 
 			//convert to deg
 			polar *= Mathf.Rad2Deg;
@@ -43,18 +48,6 @@ namespace LunraGames.NoiseMaker
 			return polar * -1f;
 		}
 
-		/// <summary>
-		/// PixelArray[0] of an image is the lower left pixel, but the Pixel2D[0,0] is the upper left. This translates the (x, y) coordinate to the proper index.
-		/// </summary>
-		/// <returns>The index of the specified pixel at (x, y).</returns>
-		/// <param name="x">The x coordinate of the pixel.</param>
-		/// <param name="y">The y coordinate of the pixel.</param>
-		/// <param name = "width">The width of the texture.</param>
-		/// <param name = "height">The height of the texture.</param>
-		public static int PixelCoordinateToIndex(int x, int y, int width, int height)
-		{
-			return ((width * height) - 1) - ((width * y) + x);
-		}
 		/*
 		// This is untested, so I'm leaving it commented until it is...
 		// Taken from http://answers.unity3d.com/questions/189724/polar-spherical-coordinates-to-xyz-and-vice-versa.html

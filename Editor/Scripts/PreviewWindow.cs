@@ -3,17 +3,18 @@ using System;
 using UnityEngine;
 using LibNoise.Models;
 using LibNoise;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public class PreviewWindow : EditorWindow
 	{
 		[SerializeField]
 		MercatorMap MercatorMap;
 		[SerializeField]
-		NoiseGraph NoiseGraph;
+		NoiseAsset NoiseGraph;
 
-		Graph Graph;
+		Noise Graph;
 		long PreviewLastUpdated;
 		Texture2D PreviewTexture;
 		Mesh PreviewMesh;
@@ -37,9 +38,9 @@ namespace LunraGames.NoiseMaker
 				
 			var overridePreview = false;
 
-			var noise = EditorGUILayout.ObjectField("Noise", NoiseGraph, typeof(NoiseGraph), false);
+			var noise = EditorGUILayout.ObjectField("Noise", NoiseGraph, typeof(NoiseAsset), false);
 			var wasNoise = NoiseGraph;
-			NoiseGraph = noise == null ? null : noise as NoiseGraph;
+			NoiseGraph = noise == null ? null : noise as NoiseAsset;
 
 			var map = EditorGUILayout.ObjectField("Mercator", MercatorMap, typeof(MercatorMap), false);
 			var wasMap = MercatorMap;
@@ -59,7 +60,7 @@ namespace LunraGames.NoiseMaker
 					return;
 				}
 
-				var selection = Selection.activeObject as NoiseGraph;
+				var selection = Selection.activeObject as NoiseAsset;
 
 				if (selection == null)
 				{
@@ -77,7 +78,7 @@ namespace LunraGames.NoiseMaker
 				return;
 			}
 
-			if (overridePreview || Graph == null) Graph = NoiseGraph.GraphInstantiation;
+			if (overridePreview || Graph == null) Graph = NoiseGraph.Noise;
 
 			if (Graph == null)
 			{
@@ -111,7 +112,7 @@ namespace LunraGames.NoiseMaker
 				var sphere = new Sphere(module);
 
 				var verts = PreviewMesh.vertices;
-				Graph.GetSphereAltitudes(sphere, ref verts, 0.75f);
+				Noise.GetSphereAltitudes(sphere, ref verts, 0.75f);
 				PreviewMesh.vertices = verts;
 
 				Updating = true;

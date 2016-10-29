@@ -1,12 +1,23 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using LunraGames.Singletonnes;
-using System;
+using LunraGamesEditor.Singletonnes;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public class NoiseMakerConfig : EditorScriptableSingleton<NoiseMakerConfig>
 	{
+		public Texture2D NoiseIcon { get { return EditorGUIUtility.isProSkin ? NoiseIconPro : NoiseIconPeasant; } }
+		[SerializeField]
+		Texture2D NoiseIconPro;
+		[SerializeField]
+		Texture2D NoiseIconPeasant;
+
+		public Texture2D EchoIcon { get { return EditorGUIUtility.isProSkin ? EchoIconPro : EchoIconPeasant; } }
+		[SerializeField]
+		Texture2D EchoIconPro;
+		[SerializeField]
+		Texture2D EchoIconPeasant;
+
 		public Texture2D[] LoadingPinwheels;
 
 		#region Elevation preview resources

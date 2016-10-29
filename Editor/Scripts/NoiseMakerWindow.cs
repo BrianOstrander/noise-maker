@@ -1,12 +1,14 @@
-﻿using UnityEditor;
+using UnityEditor;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using LibNoise;
 using LibNoise.Models;
+using LunraGames;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public class NoiseMakerWindow : EditorWindow
 	{
@@ -51,8 +53,7 @@ namespace LunraGames.NoiseMaker
 
 		string SavePath { get { return StringExtensions.IsNullOrWhiteSpace(SaveGuid) ? null : AssetDatabase.GUIDToAssetPath(SaveGuid); } }
 
-		Graph Graph;
-		List<Property> Properties;
+		Noise Graph;
 		INode ConnectingFrom;
 		INode ConnectingTo;
 		Dictionary<string, bool> ShownCategories = new Dictionary<string, bool>();
@@ -97,14 +98,11 @@ namespace LunraGames.NoiseMaker
 				// If we're opening the editor from a cold start, and it looks like the user was editing something, load it.
 				if (State == States.Idle && Graph == null && !StringExtensions.IsNullOrWhiteSpace(SaveGuid))
 				{
-					var config = AssetDatabase.LoadAssetAtPath<NoiseGraph>(SavePath);
+					var config = AssetDatabase.LoadAssetAtPath<NoiseAsset>(SavePath);
 					if (config == null) State = States.Splash;
 					else 
 					{
-						Graph = config.GraphInstantiation;
-						Properties = config.PropertiesInstantiation;
-
-						Graph.Apply(Properties.ToArray());
+						Graph = config.Noise;
 					}
 				}
 				
@@ -186,18 +184,17 @@ namespace LunraGames.NoiseMaker
 					GUILayout.Label("Welcome to Noise Maker!");
 					GUILayout.BeginHorizontal();
 					{
-						// Create new Noise Maker graph file.
+						// Create new Noise Maker noise file.
 						if (GUILayout.Button("New")) 
 						{
 							var savePath = UnityEditor.EditorUtility.SaveFilePanelInProject("New Noise Graph", "Noise", "asset", null);
 							if (!StringExtensions.IsNullOrWhiteSpace(savePath))
 							{
 								// Create default save, add required root node, save it, and open it up for editing.
-								var config = CreateInstance<NoiseGraph>();
+								var config = CreateInstance<NoiseAsset>();
 								AssetDatabase.CreateAsset(config, savePath);
 								SaveGuid = AssetDatabase.AssetPathToGUID(savePath);
-								Graph = new Graph();
-								Properties = new List<Property>();
+								Graph = new Noise();
 								var root = new RootNode();
 								root.Id = Guid.NewGuid().ToString();
 								root.EditorPosition = GraphCenter();
@@ -207,7 +204,7 @@ namespace LunraGames.NoiseMaker
 								Save();
 							}
 						}
-						// Open existing Noise Maker graph file
+						// Open existing Noise Maker noise file
 						if (GUILayout.Button("Open"))
 						{
 							var openPath = UnityEditor.EditorUtility.OpenFilePanel("Open Noise Graph", Application.dataPath, "asset");
@@ -224,11 +221,11 @@ namespace LunraGames.NoiseMaker
 		}
 
 		/// <summary>
-		/// Draws the graph containing all the nodes and connections for the file currently being edited.
+		/// Draws the noise containing all the nodes and connections for the file currently being edited.
 		/// </summary>
 		void DrawGraph ()
 		{
-			// Cache connecting from so we know if the user just clicked on a node, or deselected it by clicking the background of the graph.
+			// Cache connecting from so we know if the user just clicked on a node, or deselected it by clicking the background of the noise.
 			var connectingFromWas = ConnectingFrom;
 			// Use this to determine the start point of the connection when the user's mouse is moving around with it.
 			var fromRect = new Rect();
@@ -252,7 +249,8 @@ namespace LunraGames.NoiseMaker
 					var graphPos = new Vector2(GraphPosition.x, GraphPosition.y);
 					var unmodifiedNode = node;
 					var drawer = NodeEditorCacher.Editors[unmodifiedNode.GetType()];
-					var windowRect = new Rect(unmodifiedNode.EditorPosition + graphPos, new Vector2(216f, 77f));
+					var finalPos = unmodifiedNode.EditorPosition + graphPos;
+					var windowRect = new Rect(Mathf.Round(finalPos.x), Mathf.Round(finalPos.y), 216f, 77f);
 					// Checks if this node has inputs we need to draw.
 					if (unmodifiedNode.SourceIds != null && 0 < unmodifiedNode.SourceIds.Count && drawer.Linkers.Count == unmodifiedNode.SourceIds.Count)
 					{
@@ -306,31 +304,28 @@ namespace LunraGames.NoiseMaker
 					var unmodifiedProperty = unmodifiedNode is IPropertyNode ? unmodifiedNode as IPropertyNode : null;
 					if (unmodifiedProperty != null && unmodifiedProperty.IsEditable && drawer.Editor.DrawRenameControl(windowRect))
 					{
-						var property = Properties.FirstOrDefault(p => p.Name == unmodifiedProperty.Name);
-						var propertyName = property == null || StringExtensions.IsNullOrWhiteSpace(property.Name) ? string.Empty : property.Name;
 						TextDialogPopup.Show(
-							"Rename Property", 
+							"Rename Property",
 							freshName =>
 							{
-								if (freshName == propertyName) return;
-								else if (StringExtensions.IsNullOrWhiteSpace(freshName))
+								if (freshName == unmodifiedProperty.Name) return;
+								if (StringExtensions.IsNullOrWhiteSpace(freshName))
 								{
 									EditorUtility.DisplayDialog("Invalid Name", "A property's name can't be empty.", "Okay");
 									return;
 								}
-								foreach (var prop in Properties)
+								foreach (var prop in Graph.PropertyNodes)
 								{
-									if (prop.Name == freshName && prop != property)
+									if (prop.Name == freshName && prop.Id != unmodifiedProperty.Id)
 									{
 										EditorUtility.DisplayDialog("Duplicate Name", "A property with that name already exists.", "Okay");
 										return;
 									}
 								}
 
-								if (property == null) Properties.Add(new Property { Name = freshName, Value = (unmodifiedNode as IPropertyNode).RawPropertyValue });
-								else property.Name = freshName;
+								unmodifiedProperty.Name = freshName;
 							},
-							text: propertyName
+							text: unmodifiedProperty.Name
 						);
 					} 
 
@@ -338,34 +333,15 @@ namespace LunraGames.NoiseMaker
 
 					if (unmodifiedNode is IPropertyNode)
 					{
-						var propertyNode = unmodifiedNode as IPropertyNode;
-						var foundProperty = Properties.FirstOrDefault(p => p.Name == propertyNode.Name);
-						nodeName = propertyNode.IsEditable && foundProperty != null && !StringExtensions.IsNullOrWhiteSpace(foundProperty.Name) ? foundProperty.Name : nodeName;
-						GUI.color = propertyNode.IsEditable ? Color.green : Color.white;
+						nodeName = unmodifiedProperty.IsEditable && !StringExtensions.IsNullOrWhiteSpace(unmodifiedProperty.Name) ? unmodifiedProperty.Name : nodeName;
+						GUI.color = unmodifiedProperty.IsEditable ? Color.green : Color.white;
 					}
 					else GUI.color = unmodifiedNode is RootNode ? Styles.RootColor : Color.white;
 					// Draw the node and cache its position incase it got dragged around.
 					windowRect = GUILayout.Window(unmodifiedNode.Id.GetHashCode(), windowRect, id =>
 					{
 						GUI.DragWindow(new Rect(0f, 0f, windowRect.width, 20f));
-						try
-						{
-							var result = drawer.Editor.Draw(Graph, unmodifiedNode);
-							if (result is IPropertyNode)
-							{
-								var propertyNode = result as IPropertyNode;
-								if (propertyNode.IsEditable)
-								{
-									var property = Properties.FirstOrDefault(p => p.Name == propertyNode.Name);
-									if (property == null)
-									{
-										property = new Property { Name = propertyNode.Name, Value = propertyNode.RawPropertyValue };
-										Properties.Add(property);
-									}
-									else property.Value = propertyNode.RawPropertyValue;
-								}
-							}
-						}
+						try { drawer.Editor.Draw(Graph, unmodifiedNode); }
 						catch (Exception e)
 						{
 							// if we errored inside a guilayout begin / end, we want to try and print our helpbox inside a catch statement.
@@ -400,19 +376,10 @@ namespace LunraGames.NoiseMaker
 					}
 				}
 				// Delete the node now, since we know it won't cause any null reference exceptions.
-				if (deletedNode != null) 
-				{
-					Graph.Remove(deletedNode);
-					var deletedProperty = deletedNode is IPropertyNode ? deletedNode as IPropertyNode : null;
-					if (deletedProperty != null && deletedProperty.IsEditable)
-					{
-						var matchingProperty = Properties.FirstOrDefault(p => p.Name == deletedProperty.Name);
-						if (matchingProperty != null) Properties.Remove(matchingProperty);
-					}
-				}
+				if (deletedNode != null) Graph.Remove(deletedNode);
 			}
 	        EndWindows();
-	        // If the user clicks the background of the graph area, it cancels the process of connecting nodes.
+	        // If the user clicks the background of the noise area, it cancels the process of connecting nodes.
 			if (connectingFromWas != null && Event.current.rawType == EventType.mouseUp && ConnectingTo == null) ResetConnections();
 			// Draw the node that's following the cursor around if the user is currently connecting nodes.
 			if (ConnectingFrom != null)
@@ -512,7 +479,7 @@ namespace LunraGames.NoiseMaker
 													propertyName => 
 													{
  														if (StringExtensions.IsNullOrWhiteSpace(propertyName)) EditorUtility.DisplayDialog("Invalid", "An empty name is not valid for a property node.", "Okay");
-														else if (Properties.FirstOrDefault(p => p.Name == propertyName) != null) EditorUtility.DisplayDialog("Property Exists", "A property named \""+propertyName+"\" already exists.", "Okay");
+														else if (Graph.PropertyNodes.FirstOrDefault(p => p.Name == propertyName) != null) EditorUtility.DisplayDialog("Property Exists", "A property named \""+propertyName+"\" already exists.", "Okay");
 														else
 														{
 
@@ -522,8 +489,6 @@ namespace LunraGames.NoiseMaker
 															node.IsEditable = true;
 															node.Name = propertyName;
 															Graph.Add(node);
-
-															Properties.Add(new Property { Name = node.Name, Value = node.RawPropertyValue });
 														}
 													},
 													description: "Enter a unique name for this property node."
@@ -719,7 +684,7 @@ namespace LunraGames.NoiseMaker
 					{
 						// Get the value from the specified location, and run it through the selected previewer. 
 						var value = module.GetValue(x, y, 0f);
-						pixels[SphereUtils.PixelCoordinateToIndex(x, y, PreviewTexture.width, PreviewTexture.height)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
+						pixels[Texture2DExtensions.PixelCoordinateToIndex(x, y, PreviewTexture.width, PreviewTexture.height)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
 					}
 				}
 				PreviewTexture.SetPixels(pixels);
@@ -789,7 +754,7 @@ namespace LunraGames.NoiseMaker
 				var sphere = new Sphere(module);
 
 				var verts = PreviewMesh.vertices;
-				Graph.GetSphereAltitudes(sphere, ref verts, 0.75f);
+				Noise.GetSphereAltitudes(sphere, ref verts, 0.75f);
 				PreviewMesh.vertices = verts;
 
 				PreviewUpdating = true;
@@ -840,7 +805,7 @@ namespace LunraGames.NoiseMaker
 							for (var y = 0; y < resultHeight; y++)
 							{
 								var value = (float)module.GetValue(x, y, 0f);
-								pixels[SphereUtils.PixelCoordinateToIndex(x, y, resultWidth, resultHeight)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
+								pixels[Texture2DExtensions.PixelCoordinateToIndex(x, y, resultWidth, resultHeight)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
 							}
 						}
 					}
@@ -882,7 +847,7 @@ namespace LunraGames.NoiseMaker
 								var lat = SphereUtils.GetLatitude(y, resultHeight);
 								var lon = SphereUtils.GetLongitude(x, resultWidth);
 								var value = sphere.GetValue(lat, lon);
-								pixels[SphereUtils.PixelCoordinateToIndex(x, y, resultWidth, resultHeight)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
+								pixels[Texture2DExtensions.PixelCoordinateToIndex(x, y, resultWidth, resultHeight)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
 							}
 						}
 					}
@@ -901,7 +866,6 @@ namespace LunraGames.NoiseMaker
 			State = States.Splash;
 			SaveGuid = null;
 			Graph = null;
-			Properties = null;
 			GraphPosition = Vector3.zero;
 			PreviewLastUpdated = 0L;
 			ResetConnections();
@@ -924,7 +888,7 @@ namespace LunraGames.NoiseMaker
 		{
 			if (State != States.Idle || Graph == null) return;
 			if (StringExtensions.IsNullOrWhiteSpace(SavePath)) throw new NullReferenceException("SavePath cannot be null");
-			var config = AssetDatabase.LoadAssetAtPath<NoiseGraph>(SavePath);
+			var config = AssetDatabase.LoadAssetAtPath<NoiseAsset>(SavePath);
 
 			if (config == null) 
 			{
@@ -932,9 +896,9 @@ namespace LunraGames.NoiseMaker
 				Reset();
 				return;
 			}
-
-			config.GraphInstantiation = Graph;
-			config.PropertiesInstantiation = Properties;
+			var updatedAt = config.UpdatedAt;
+			config.Noise = Graph;
+			if (updatedAt == config.UpdatedAt) return;
 			EditorUtility.SetDirty(config);
 			AssetDatabase.SaveAssets();
 			AssetDatabase.Refresh();
@@ -961,7 +925,7 @@ namespace LunraGames.NoiseMaker
     	}  
 
     	/// <summary>
-    	/// Gets the current center of the graph, from the users perspective.
+    	/// Gets the current center of the noise, from the users perspective.
     	/// </summary>
     	/// <returns>The center.</returns>
     	Vector2 GraphCenter()
@@ -1007,16 +971,20 @@ namespace LunraGames.NoiseMaker
 				}
 
 				// Open up existing file for editing.
-				SaveGuid = AssetDatabase.AssetPathToGUID(fromAssets ? path : "Assets"+path.Substring(Application.dataPath.Length));
-				var config = AssetDatabase.LoadAssetAtPath<NoiseGraph>(SavePath);
-				Graph = config.GraphInstantiation;
-				Properties = config.PropertiesInstantiation;
-				Graph.Apply(Properties.ToArray());
+				var guid = AssetDatabase.AssetPathToGUID(fromAssets ? path : "Assets"+path.Substring(Application.dataPath.Length));
+				var config = AssetDatabase.LoadAssetAtPath<NoiseAsset>(AssetDatabase.GUIDToAssetPath(guid));
+				if (config == null)
+				{
+					EditorUtility.DisplayDialog("Invalid", "The file \""+System.IO.Path.GetFileName(path)+"\" is not a valid Noise asset.", "Okay");
+					return;
+				}
+				SaveGuid = guid;
+				Graph = config.Noise;
 				State = States.Idle;
 
 				Repaint();
 			}
-			else EditorUtility.DisplayDialog("Invalid", "Selected noise graph must be inside project directory.", "Okay");	
+			else EditorUtility.DisplayDialog("Invalid", "Selected noise noise must be inside project directory.", "Okay");	
 		}
 	}
 }

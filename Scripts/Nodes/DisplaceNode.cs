@@ -1,4 +1,4 @@
-﻿using LibNoise;
+using LibNoise;
 using LibNoise.Modifiers;
 using System.Collections.Generic;
 using Newtonsoft.Json;
@@ -28,9 +28,9 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(3, hide: true), JsonIgnore]
 		public IModule ZDisplacement;
 
-		public override IModule GetValue (Graph graph)
+		public override IModule GetValue (Noise noise)
 		{
-			var values = NullableValues(graph);
+			var values = NullableValues(noise);
 
 			var source = GetLocalIfValueNull<IModule>(Source, 0, values);
 			var xDisplacement = GetLocalIfValueNull<IModule>(XDisplacement, 1, values);

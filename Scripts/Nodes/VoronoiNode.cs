@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using LibNoise;
 using LunraGames.NumberDemon;
 
@@ -15,9 +15,9 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(3)]
 		public int Seed = DemonUtility.NextInteger;
 
-		public override IModule GetValue (Graph graph)
+		public override IModule GetValue (Noise noise)
 		{
-			var values = NullableValues(graph);
+			var values = NullableValues(noise);
 
 			var voronoi = Value == null ? new Voronoi() : Value as Voronoi;
 

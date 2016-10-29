@@ -9,6 +9,8 @@ namespace LunraGames.NoiseMaker
 {
 	public class Mercator
 	{
+		delegate float GetSphereValue(float latitude, float longitude);
+
 		public List<Domain> Domains = new List<Domain>();
 		public List<Biome> Biomes = new List<Biome>();
 		public List<Altitude> Altitudes = new List<Altitude>();
@@ -87,11 +89,23 @@ namespace LunraGames.NoiseMaker
 			return GetColor(domain => domain.GetSphereWeight(latitude, longitude, altitude), domain => domain.GetSphereColor(latitude, longitude, altitude, this));
 		}
 
+		public void GetSphereColors(int width, int height, Echo echo, ref Color[] colors)
+		{
+			if (echo == null) throw new ArgumentNullException("echo");
+			GetSphereColors(width, height, echo.Sphere, ref colors);
+		}
+
 		public void GetSphereColors(int width, int height, Sphere sphere, ref Color[] colors)
+		{
+			if (sphere == null) throw new ArgumentNullException("sphere");
+			GetSphereColors(width, height, sphere.GetValue, ref colors);
+		}
+
+		void GetSphereColors(int width, int height, GetSphereValue getValue, ref Color[] colors)
 		{
 			if (colors == null) throw new ArgumentNullException("colors");
 			if (height * width != colors.Length) throw new ArgumentOutOfRangeException("colors");
-			if (sphere == null) throw new ArgumentNullException("sphere");
+			if (getValue == null) throw new ArgumentNullException("value");
 
 			for (var x = 0; x < width; x++)
 			{
@@ -99,8 +113,8 @@ namespace LunraGames.NoiseMaker
 				{
 					var lat = SphereUtils.GetLatitude(y, height);
 					var lon = SphereUtils.GetLongitude(x, width);
-					var value = sphere.GetValue(lat, lon);
-					colors[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = GetSphereColor(lat, lon, value);
+					var value = getValue(lat, lon);
+					colors[Texture2DExtensions.PixelCoordinateToIndex(x, y, width, height)] = GetSphereColor(lat, lon, value);
 				}
 			}
 		}

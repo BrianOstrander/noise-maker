@@ -4,8 +4,10 @@ using System.Linq;
 using UnityEngine;
 using LibNoise;
 using LibNoise.Models;
+using LunraGames.NoiseMaker;
+using LunraGames;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public abstract class DomainEditor
 	{
@@ -62,7 +64,7 @@ namespace LunraGames.NoiseMaker
 								var normalValue = Previewer.Calculate(value, Previewer);
 								var highlightedValue = Color.green.NewV(normalValue);
 
-								pixels[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = Mathf.Approximately(0f, weight) ? normalValue : highlightedValue;
+								pixels[Texture2DExtensions.PixelCoordinateToIndex(x, y, width, height)] = Mathf.Approximately(0f, weight) ? normalValue : highlightedValue;
 							}
 						}
 					},

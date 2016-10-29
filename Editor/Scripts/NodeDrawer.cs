@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 	public class NodeDrawer : Attribute

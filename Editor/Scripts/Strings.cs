@@ -1,4 +1,4 @@
-﻿namespace LunraGames.NoiseMaker
+﻿namespace LunraGamesEditor.NoiseMaker
 {
 	public static class Strings
 	{

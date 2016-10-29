@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public class VisualizationPreview 
 	{

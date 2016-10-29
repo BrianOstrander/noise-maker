@@ -1,6 +1,8 @@
 ﻿using System;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace LunraGames.NoiseMaker
 {
@@ -8,36 +10,65 @@ namespace LunraGames.NoiseMaker
 	public class Property
 	{
 		public string Name;
-		[JsonProperty]
+		[SerializeField, JsonProperty]
+		string SerializedValue;
+		[SerializeField, JsonProperty]
+		string SerializedType;
+		[SerializeField, JsonIgnore]
+		Object AssetValue;
+
+		Type _Type;
+
+		[JsonIgnore]
+		public Type Type 
+		{
+			get 
+			{ 
+				return _Type ?? (_Type = string.IsNullOrEmpty(SerializedType) ? null : Type.GetType(SerializedType)); 
+			}
+			private set 
+			{
+				_Type = value;
+				SerializedType = value == null ? null : value.AssemblyQualifiedName;
+			}
+		}
+
 		object _Value;
-		// todo: remove this hack, when I have the patience...
-		[JsonProperty]
-		Vector3 ValueVector3;
-		[JsonProperty]
-		Type Type;
 
 		[JsonIgnore]
 		public object Value
 		{
 			get 
 			{
-				if (_Value == null) return null;
-
-				// hack to fix newtonsoft defaulting objects to doubles.
-				if (_Value is double) _Value = Convert.ToSingle((double)_Value);
-				else if (_Value is long) _Value = Convert.ToInt32((long)_Value);
-
-				if (typeof(Enum).IsAssignableFrom(Type)) _Value = _Value is Enum ? _Value : Enum.Parse(Type, Enum.GetNames(Type)[(int)_Value]);
-				else if (Type == typeof(Vector3)) _Value = ValueVector3;
-
+				if (typeof(Object).IsAssignableFrom(Type)) return AssetValue;
+				if (_Value == null)
+				{
+					_Value = Serialization.DeserializeJson(Type, SerializedValue, verbose: true);
+					if (_Value is JObject) _Value = (_Value as JObject).ToObject(Type);
+				}
 				return _Value;
 			}
-			set
+			private set
 			{
-				_Value = value;
-				Type = value == null ? null : value.GetType();
-				if (Type == typeof(Vector3)) ValueVector3 = (Vector3)value;
+				_Value = null;
+				AssetValue = null;
+
+				if (value == null) return;
+
+				if (typeof(Object).IsAssignableFrom(Type)) AssetValue = value as Object;
+				else SerializedValue = Serialization.SerializeJson(value, true);
 			}
+		}
+
+		public void SetValue<T>(T value)
+		{
+			SetValue(value, typeof(T));
+		}
+
+		public void SetValue(object value, Type type)
+		{
+			Type = type;
+			Value = value;
 		}
 	}
 }

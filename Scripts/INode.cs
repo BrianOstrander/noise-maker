@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using System;
 
@@ -13,8 +13,8 @@ namespace LunraGames.NoiseMaker
 		int SourceCount { get; }
 		string Id { get; set; }
 		List<string> SourceIds { get; set; }
-		object GetRawValue(Graph graph);
+		object GetRawValue(Noise noise);
 		Type OutputType { get; }
-		bool HasAncestor(Graph graph, string ancestorId);
+		bool HasAncestor(Noise noise, string ancestorId);
 	}
 }

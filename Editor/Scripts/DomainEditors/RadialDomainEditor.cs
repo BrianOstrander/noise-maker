@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using UnityEditor;
-using LibNoise;
+﻿using UnityEditor;
+using LunraGames;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[DomainDrawer(typeof(RadialDomain), "Radial", "Define a radial constraint for a Biome")]
 	public class RadialDomainEditor : DomainEditor

@@ -4,8 +4,10 @@ using System.Linq;
 using UnityEngine;
 using LibNoise;
 using LibNoise.Models;
+using LunraGames.NoiseMaker;
+using LunraGames;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public static class BiomeEditor
 	{
@@ -73,7 +75,7 @@ namespace LunraGames.NoiseMaker
 
 								var hiddenColor = Previewer.Calculate(value, Previewer);
 
-								pixels[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = Mathf.Approximately(0f, weight) ? hiddenColor : color;
+								pixels[Texture2DExtensions.PixelCoordinateToIndex(x, y, width, height)] = Mathf.Approximately(0f, weight) ? hiddenColor : color;
 							}
 						}
 					},

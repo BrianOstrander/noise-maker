@@ -1,17 +1,13 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
-using UnityEditor;
-using LibNoise;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[NodeDrawer(typeof(VoronoiNode), Strings.Generators, "Voronoi")]
 	public class VoronoiNodeEditor : NodeEditor
 	{
-		public override INode Draw(Graph graph, INode node)
+		public override INode Draw(Noise noise, INode node)
 		{
-			return DrawFields(graph, node);
+			return DrawFields(noise, node);
 		}
 	}
 }

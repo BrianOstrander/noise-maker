@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+using System;
+using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
 {
@@ -6,7 +7,7 @@ namespace LunraGames.NoiseMaker
 	{
 		public string Name { get; set; }
 		public bool IsEditable { get; set; }
-		public T PropertyValue { get; set; }
+		public virtual T PropertyValue { get; set; }
 
 		[JsonIgnore]
 		public object RawPropertyValue 
@@ -19,7 +20,7 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
-		public override T GetValue (Graph graph)
+		public override T GetValue (Noise noise)
 		{
 			Value = PropertyValue;
 			return Value;
@@ -27,6 +28,17 @@ namespace LunraGames.NoiseMaker
 
 		[JsonIgnore]
 		protected virtual T DefaultValue { get { return default(T); } }
+		[JsonIgnore]
+		public Property Property
+		{
+			get
+			{
+				var property = new Property();
+				property.Name = Name;
+				property.SetValue(PropertyValue);
+				return property;
+			}
+		}
 
 		public PropertyNode() 
 		{

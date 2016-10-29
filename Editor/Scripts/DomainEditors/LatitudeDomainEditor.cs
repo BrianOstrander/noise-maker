@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using LibNoise;
+using LunraGames;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	[DomainDrawer(typeof(LatitudeDomain), "Latitude", "Define a minimum and maximum latitude constraint for a Biome")]
 	public class LatitudeDomainEditor : DomainEditor 

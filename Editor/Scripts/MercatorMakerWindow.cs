@@ -5,8 +5,10 @@ using UnityEngine;
 using System.Linq;
 using LibNoise;
 using LibNoise.Models;
+using LunraGames;
+using LunraGames.NoiseMaker;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public class MercatorMakerWindow : EditorWindow
 	{
@@ -62,7 +64,7 @@ namespace LunraGames.NoiseMaker
 		[SerializeField]
 		string SaveGuid;
 		[SerializeField]
-		NoiseGraph NoiseGraph;
+		NoiseAsset NoiseGraph;
 		[SerializeField]
 		Vector2 DomainsScrollPosition = Vector2.zero;
 		[SerializeField]
@@ -77,7 +79,7 @@ namespace LunraGames.NoiseMaker
 		Vector2 BiomeScrollPosition = Vector2.zero;
 
 		long GraphLastUpdated;
-		Graph Graph;
+		Noise Graph;
 		Dictionary<string, Action<Node<IModule>, Rect, int>> Previews;
 		int PreviewSelected;
 		long PreviewLastUpdated;
@@ -256,15 +258,15 @@ namespace LunraGames.NoiseMaker
 
 				UnityEngine.Object freshNoiseGraph = null;
 				// Apparently unity likes to randomly throw this error... whatever...
-				try { freshNoiseGraph = EditorGUILayout.ObjectField("Noise", NoiseGraph, typeof(NoiseGraph), false); }
+				try { freshNoiseGraph = EditorGUILayout.ObjectField("Noise", NoiseGraph, typeof(NoiseAsset), false); }
 				catch (Exception e) { if (!(e is ExitGUIException)) throw; }
-				NoiseGraph = freshNoiseGraph as NoiseGraph;
+				NoiseGraph = freshNoiseGraph as NoiseAsset;
 
 				if (GraphLastUpdated < NoiseMakerWindow.ActiveLastUpdated || Graph == null && NoiseGraph != null)
 				{
 					GraphLastUpdated = DateTime.Now.Ticks;
 					if (NoiseGraph == null) Graph = null;
-					else Graph = NoiseGraph.GraphInstantiation;
+					else Graph = NoiseGraph.Noise;
 					PreviewUpdating = false;
 					PreviewLastUpdated = 0L;
 					PreviewObjectEditor = null;
@@ -834,7 +836,7 @@ namespace LunraGames.NoiseMaker
 				PreviewModule = sphere;
 
 				var verts = PreviewMesh.vertices;
-				Graph.GetSphereAltitudes(sphere, ref verts, 0.75f);
+				Noise.GetSphereAltitudes(sphere, ref verts, 0.75f);
 				PreviewMesh.vertices = verts;
 
 				PreviewUpdating = true;

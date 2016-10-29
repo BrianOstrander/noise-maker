@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using LibNoise;
 using System.Collections.Generic;
 using LibNoise.Modifiers;
@@ -18,9 +18,9 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		public List<Vector2> Points;
 
-		public override IModule GetValue (Graph graph)
+		public override IModule GetValue (Noise noise)
 		{
-			var source = GetLocalIfValueNull(Source, 0, graph);
+			var source = GetLocalIfValueNull(Source, 0, noise);
 
 			if (source == null) return null;
 

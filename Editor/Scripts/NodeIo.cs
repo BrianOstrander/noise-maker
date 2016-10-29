@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using LibNoise;
 using System;
 
-namespace LunraGames.NoiseMaker
+namespace LunraGamesEditor.NoiseMaker
 {
 	public class NodeIo
 	{

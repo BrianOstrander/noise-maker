@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using LibNoise;
 using LunraGames.NoiseMaker.Modifiers;
 using Newtonsoft.Json;
@@ -12,9 +12,9 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(1)]
 		public AnimationCurve Curve = new AnimationCurve();
 
-		public override IModule GetValue (Graph graph)
+		public override IModule GetValue (Noise noise)
 		{
-			var values = NullableValues(graph);
+			var values = NullableValues(noise);
 			var source = GetLocalIfValueNull(Source, 0, values);
 
 			if (source == null) return null;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,32 +72,32 @@ namespace LunraGames.NoiseMaker
 
 		public Type OutputType { get { return typeof(T); } }
 
-		public abstract T GetValue(Graph graph);
+		public abstract T GetValue(Noise noise);
 
-		public object GetRawValue(Graph graph)
+		public object GetRawValue(Noise noise)
 		{
-			return GetValue(graph);
+			return GetValue(noise);
 		}
 
 		/// <summary>
 		/// Returns a list of sources only if each one is actually defined.
 		/// </summary>
-		/// <param name="graph">The parent graph.</param>
+		/// <param name="noise">The parent noise.</param>
 		/// <param name="sources">Sources.</param>
 		// todo: this seems very redundent...
-		protected List<object> Values(Graph graph, params string[] sources)
+		protected List<object> Values(Noise noise, params string[] sources)
 		{
-			if (graph == null) throw new ArgumentNullException("graph");
-			if (graph.AllNodes == null) throw new ArgumentException("graph.Nodes");
+			if (noise == null) throw new ArgumentNullException("noise");
+			if (noise.AllNodes == null) throw new ArgumentException("noise.Nodes");
 
 			var result = new List<object>();
 			var ids = sources.Length == 0 ? SourceIds.ToArray() : sources;
 			foreach (var source in ids)
 			{
 				if (StringExtensions.IsNullOrWhiteSpace(source)) throw new ArgumentNullException("sources", "Array \"sources\" can't contain a null or empty string");
-				var node = graph.AllNodes.FirstOrDefault(n => n.Id == source);
+				var node = noise.AllNodes.FirstOrDefault(n => n.Id == source);
 				if (node == null) throw new ArgumentOutOfRangeException("sources", "No node found for \""+sources+"\"");
-				result.Add(node.GetRawValue(graph));
+				result.Add(node.GetRawValue(noise));
 			}
 			return result;
 		}
@@ -106,12 +106,12 @@ namespace LunraGames.NoiseMaker
 		/// Returns a list of sources, or nulls if no sources are specified.
 		/// </summary>
 		/// <returns>The sources.</returns>
-		/// <param name="graph">The parent graph.</param>
+		/// <param name="noise">The parent noise.</param>
 		/// <param name="sources">Sources.</param>
-		protected List<object> NullableValues(Graph graph, params string[] sources)
+		protected List<object> NullableValues(Noise noise, params string[] sources)
 		{
-			if (graph == null) throw new ArgumentNullException("graph");
-			if (graph.AllNodes == null) throw new ArgumentException("graph.Nodes");
+			if (noise == null) throw new ArgumentNullException("noise");
+			if (noise.AllNodes == null) throw new ArgumentException("noise.Nodes");
 
 			var result = new List<object>();
 			var ids = sources.Length == 0 ? SourceIds.ToArray() : sources;
@@ -120,9 +120,9 @@ namespace LunraGames.NoiseMaker
 				if (StringExtensions.IsNullOrWhiteSpace(source)) result.Add(null);
 				else
 				{
-					var node = graph.AllNodes.FirstOrDefault(n => n.Id == source);
+					var node = noise.AllNodes.FirstOrDefault(n => n.Id == source);
 					if (node == null) throw new ArgumentOutOfRangeException("sources", "No node found for \""+sources+"\"");
-					result.Add(node.GetRawValue(graph));
+					result.Add(node.GetRawValue(noise));
 				}
 			}
 			return result;
@@ -194,9 +194,9 @@ namespace LunraGames.NoiseMaker
 
 		protected bool InvalidSourceCount { get { return SourceIds == null || SourceIds.Count != SourceCount; } }
 
-		protected S GetLocalIfValueNull<S>(S localValue, int valueIndex,  Graph graph)
+		protected S GetLocalIfValueNull<S>(S localValue, int valueIndex,  Noise noise)
 		{
-			return GetLocalIfValueNull<S>(localValue, valueIndex, NullableValues(graph));
+			return GetLocalIfValueNull<S>(localValue, valueIndex, NullableValues(noise));
 		}
 
 		protected S GetLocalIfValueNull<S>(S localValue, int valueIndex,  List<object> values)
@@ -211,7 +211,7 @@ namespace LunraGames.NoiseMaker
 			return (S)value;
 		}
 
-		public bool HasAncestor(Graph graph, string ancestorId)
+		public bool HasAncestor(Noise noise, string ancestorId)
 		{
 			if (string.IsNullOrEmpty(ancestorId)) return false;
 			if (ancestorId == Id) return true;
@@ -222,8 +222,8 @@ namespace LunraGames.NoiseMaker
 
 				if (id == ancestorId) return true;
 
-				var child = graph.AllNodes.FirstOrDefault(c => c.Id == id);
-				var hasAncestor = child == null ? false : child.HasAncestor(graph, ancestorId);
+				var child = noise.AllNodes.FirstOrDefault(c => c.Id == id);
+				var hasAncestor = child == null ? false : child.HasAncestor(noise, ancestorId);
 				if (hasAncestor) return true;
 			}
 			return false;
