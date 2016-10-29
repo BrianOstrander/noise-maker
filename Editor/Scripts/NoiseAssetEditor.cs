@@ -18,6 +18,9 @@ namespace LunraGamesEditor.NoiseMaker
 
 		public override void OnInspectorGUI()
 		{
+			var splashImage = NoiseMakerConfig.Instance.SplashMini;
+			GUI.Box(new Rect(0f, Screen.height - splashImage.height - (splashImage.height * 0.2f), splashImage.width, splashImage.height), splashImage, GUIStyle.none);
+
 			var typedTarget = target as NoiseAsset;
 
 			var assetPath = AssetDatabase.GetAssetPath(target.GetInstanceID());
