@@ -260,5 +260,15 @@ namespace LunraGames.NoiseMaker
 			property.RawPropertyValue = value;
 			CleanCache();
 		}
+
+		public static Noise FromJson(string json)
+		{
+			return Serialization.DeserializeJson<Noise>(json, verbose: true);
+		}
+
+		public static string ToJson(Noise noise)
+		{
+			return Serialization.SerializeJson(noise, true);
+		}
 	}
 }

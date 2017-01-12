@@ -22,8 +22,7 @@ namespace LunraGames.NoiseMaker
 
 		public override T GetValue (Noise noise)
 		{
-			Value = PropertyValue;
-			return Value;
+			return Value = PropertyValue;
 		}
 
 		[JsonIgnore]

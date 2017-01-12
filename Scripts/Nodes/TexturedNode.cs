@@ -10,6 +10,8 @@ namespace LunraGames.NoiseMaker
 		public Texture2D Texture;
 		[NodeLinker(1)]
 		public TextureChannels Channel;
+		[NodeLinker(2)]
+		public Color DefaultColor = Color.gray;
 
 		Texture2D lastTexture;
 		Color[][] lastArray;
@@ -20,33 +22,34 @@ namespace LunraGames.NoiseMaker
 
 			var texture = GetLocalIfValueNull(Texture, 0, values);
 			var channel = GetLocalIfValueNull(Channel, 1, values);
+			var color = GetLocalIfValueNull(DefaultColor, 2, values);
 
 			var textured = Value == null ? new Textured() : Value as Textured;
-
-			if (texture == null) return null;
 
 			if (texture != lastTexture)
 			{
 				lastTexture = texture;
 				Color[][] newArray = null;
 
-				try
+				if (texture != null)
 				{
-					newArray = texture == null ? null : Texture2DExtensions.GetAsArray(texture);
-				} 
-				catch (UnityException)
-				{
-					texture = null;
-					lastTexture = null;
-					lastArray = null;
-					return null;
+					try
+					{
+						newArray = texture == null ? null : Texture2DExtensions.GetAsArray(texture);
+					}
+					catch (UnityException)
+					{
+						texture = null;
+						lastTexture = null;
+					}
 				}
-
+				
 				lastArray = newArray;
 			}
 
 			textured.Texture = lastArray;
 			textured.Channel = channel;
+			textured.DefaultColor = color;
 
 			Value = textured;
 

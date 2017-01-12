@@ -14,11 +14,11 @@ namespace LunraGames.NoiseMaker
 		{
 			get 
 			{
-				return Serialization.DeserializeJson<Noise>(NoiseJson, verbose: true);
+				return Noise.FromJson(NoiseJson);
 			}
 			set
 			{
-				var replacement = Serialization.SerializeJson(value, true);
+				var replacement = Noise.ToJson(value);
 				if (replacement != NoiseJson)
 				{
 					NoiseJson = replacement;
