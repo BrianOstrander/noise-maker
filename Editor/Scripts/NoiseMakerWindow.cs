@@ -380,7 +380,7 @@ namespace LunraGamesEditor.NoiseMaker
 			}
 	        EndWindows();
 	        // If the user clicks the background of the noise area, it cancels the process of connecting nodes.
-			if (connectingFromWas != null && Event.current.rawType == EventType.mouseUp && ConnectingTo == null) ResetConnections();
+			if (connectingFromWas != null && Event.current.rawType == EventType.MouseUp && ConnectingTo == null) ResetConnections();
 			// Draw the node that's following the cursor around if the user is currently connecting nodes.
 			if (ConnectingFrom != null)
 			{
